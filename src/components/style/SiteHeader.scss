@@ -1,0 +1,132 @@
+@use "mixins" as *;
+@use "tokens" as *;
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-background) 94%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.site-header__inner {
+  display: grid;
+  min-height: 4rem;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 1rem;
+
+  @include desktop {
+    grid-template-columns: auto 1fr auto;
+  }
+}
+
+.site-header__brand {
+  font-family: $font-heading;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.site-header__nav {
+  display: none;
+  align-items: stretch;
+  gap: 1rem;
+
+  @include tablet {
+    display: flex;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    transition: border-color 180ms ease,
+    color 180ms ease;
+
+    &:hover,
+    &[aria-current="page"] {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+  }
+}
+
+.site-header__actions {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  @include desktop {
+    grid-column: auto;
+    justify-content: flex-end;
+  }
+}
+
+.site-header__search {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-base;
+  background: var(--color-surface-subtle);
+  padding: 0.5rem 0.75rem;
+  color: var(--color-text-secondary);
+  text-align: left;
+
+  @include tablet {
+    max-width: 16rem;
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--color-primary);
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-text-secondary);
+  }
+
+  span {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  kbd {
+    display: none;
+    border: 1px solid var(--color-border-strong);
+    border-radius: $radius-sm;
+    background: var(--color-surface-raised);
+    color: var(--color-text-secondary);
+    font-family: $font-code;
+    font-size: 0.6875rem;
+    line-height: 1;
+    padding: 0.25rem 0.35rem;
+
+    @include tablet {
+      display: inline-flex;
+    }
+  }
+}
+
+.site-header__language {
+  select {
+    min-height: 2.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: $radius-base;
+    background: transparent;
+    color: var(--color-text-primary);
+    padding-inline: 0.5rem;
+  }
+}

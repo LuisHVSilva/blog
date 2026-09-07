@@ -1,0 +1,12 @@
+@use "tokens" as *;
+
+.container {
+  width: min(100% - ($gutter-mobile * 2), $container-max);
+  margin-inline: auto;
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .container {
+    width: min(100% - ($gutter * 2), $container-max);
+  }
+}
