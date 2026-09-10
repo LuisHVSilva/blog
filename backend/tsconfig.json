@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "node16",
+    "moduleResolution": "node16",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "rootDir": "./",
+    "noEmitOnError": true,
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.ts", "migrations/**/*.ts"],
+  "exclude": ["node_modules", "dist", "tests"]
+}

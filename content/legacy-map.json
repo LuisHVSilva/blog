@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "source": "frontend/artigo/js-ts-demystified/javascript-typescript-sem-misterio.pt-BR.md",
+      "articleId": "11111111-1111-4111-8111-111111111111",
+      "translationId": "21111111-1111-4111-8111-111111111111",
+      "locale": "pt-BR",
+      "legacyPath": "/article/js-ts-demystified",
+      "path": "/pt-BR/articles/javascript-typescript-sem-misterio"
+    },
+    {
+      "source": "frontend/artigo/js-ts-demystified/javascript-typescript-demystified.en.md",
+      "articleId": "11111111-1111-4111-8111-111111111111",
+      "translationId": "31111111-1111-4111-8111-111111111111",
+      "locale": "en",
+      "legacyPath": "/article/js-ts-demystified",
+      "path": "/en/articles/javascript-typescript-demystified"
+    },
+    {
+      "source": "frontend/artigo/ts-config-explanation/TSConfig_artigo_blog_didatico.md",
+      "articleId": "12222222-2222-4222-8222-222222222222",
+      "translationId": "22222222-2222-4222-8222-222222222222",
+      "locale": "pt-BR",
+      "legacyPath": "/article/ts-config-explanation",
+      "path": "/pt-BR/articles/tsconfig-sem-misterio"
+    },
+    {
+      "source": "frontend/artigo/ts-config-explanation/TSConfig_blog_article_english.md",
+      "articleId": "12222222-2222-4222-8222-222222222222",
+      "translationId": "32222222-2222-4222-8222-222222222222",
+      "locale": "en",
+      "legacyPath": "/article/ts-config-explanation",
+      "path": "/en/articles/tsconfig-demystified"
+    },
+    {
+      "source": "frontend/artigo/nodejs-por-baixo-do-framework/nodejs-por-baixo-do-framework.pt-BR.md",
+      "articleId": "13333333-3333-4333-8333-333333333333",
+      "translationId": "23333333-3333-4333-8333-333333333333",
+      "locale": "pt-BR",
+      "legacyPath": "/article/nodejs-por-baixo-do-framework",
+      "path": "/pt-BR/articles/nodejs-por-baixo-do-framework"
+    },
+    {
+      "source": "frontend/artigo/nodejs-por-baixo-do-framework/nodejs-under-the-framework.en.md",
+      "articleId": "13333333-3333-4333-8333-333333333333",
+      "translationId": "33333333-3333-4333-8333-333333333333",
+      "locale": "en",
+      "legacyPath": "/article/nodejs-por-baixo-do-framework",
+      "path": "/en/articles/nodejs-under-the-framework"
+    },
+    {
+      "source": "frontend/artigo/backend-architecture-ts-node-foundation/arquitetura-backend-base-ts-node.pt-BR.md",
+      "articleId": "14444444-4444-4444-8444-444444444444",
+      "translationId": "24444444-4444-4444-8444-444444444444",
+      "locale": "pt-BR",
+      "legacyPath": "/article/backend-architecture-ts-node-foundation",
+      "path": "/pt-BR/articles/arquitetura-backend-base-ts-node"
+    },
+    {
+      "source": "frontend/artigo/backend-architecture-ts-node-foundation/backend-architecture-ts-node-foundation.en.md",
+      "articleId": "14444444-4444-4444-8444-444444444444",
+      "translationId": "34444444-4444-4444-8444-444444444444",
+      "locale": "en",
+      "legacyPath": "/article/backend-architecture-ts-node-foundation",
+      "path": "/en/articles/backend-architecture-ts-node-foundation"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+import {parseContentRoot} from './content-parser';
+import {validateContent} from '../../application/validate-content';
+import {PostgresPublicationStore} from '../postgres/publication-store';
+import {Database} from '../../../../infrastructure/database';
+import {loadConfig, loadEnvironment} from '../../../../config/env';
+import {argument, validateArguments} from './arguments';
+import {reportFailure} from './failure';
+import {PublishingValidationError} from '../../application/publishing.errors';
+
+export async function execute(argv = process.argv.slice(2)) {
+    validateArguments(argv, ['--root', '--expected-revision', '--operator-id', '--revision'], ['--dry-run']);
+    const root = argument(argv, '--root'); const expectedRevisionArgument = argument(argv, '--expected-revision'); const operatorId = argument(argv, '--operator-id'); const dryRun = argv.includes('--dry-run');
+    const revision = argument(argv, '--revision');
+    if (!revision) throw new PublishingValidationError('Provide --revision identifying the reviewed source edition.');
+    if (!root || !expectedRevisionArgument || !operatorId) throw new PublishingValidationError('Use --root, --expected-revision and --operator-id. Use empty only for the first import.');
+    const expectedRevision = expectedRevisionArgument === 'empty' ? '' : expectedRevisionArgument;
+    const parsed = await parseContentRoot(root); const validation = validateContent(parsed); if (!validation.valid) throw new PublishingValidationError('Content validation failed.');
+    const env = loadEnvironment(); const config = loadConfig(env); const database = new Database(config.database);
+    try {
+        await database.connect();
+        return await new PostgresPublicationStore(database.getSequelize()).applyEdition({expectedRevision, dryRun, operator: {kind: 'operator', id: operatorId, sourceRevision: revision}, catalog: parsed.catalog,
+            articles: parsed.map((item, index) => ({articleId: item.articleId, translationId: item.translationId, sourceLocale: item.sourceLocale as 'pt-BR' | 'en', locale: item.locale as 'pt-BR' | 'en',
+                authorId: parsed.catalog.articles.find((article) => article.id === item.articleId)!.authorId, difficulty: item.difficulty as 'foundational' | 'intermediate' | 'advanced',
+                slug: item.slug, title: item.title, description: item.description, bodyMarkdown: item.body, readingMinutes: validation.edition[index]!.readingMinutes, seo: item.seo ?? {title: item.title, description: item.description},
+                sourceRevision: item.sourceRevision, translatedFromRevision: item.translatedFromRevision, status: item.status, updatedAt: item.updatedAt, publishedAt: item.publishedAt}))});
+    } finally { await database.disconnect(); }
+}
+if (require.main === module) execute().then((result) => process.stdout.write(JSON.stringify(result) + '\n')).catch(reportFailure);

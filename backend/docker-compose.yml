@@ -1,0 +1,65 @@
+name: blog
+x-app-environment: &app-environment
+  NODE_ENV: production
+  PORT: 3010
+  DB_HOST: postgres
+  DB_PORT: 5432
+  DB_NAME: ${DB_NAME:?Set DB_NAME}
+  DB_USERNAME: blog_app
+  DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+  PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:?Set PUBLIC_SITE_URL}
+  CORS_ORIGINS: ${CORS_ORIGINS:-}
+  TRUST_PROXY: ${TRUST_PROXY:-false}
+  SYNC: 'false'
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:?Set DB_NAME}
+      POSTGRES_USER: ${MIGRATOR_DB_USERNAME:?Set MIGRATOR_DB_USERNAME}
+      POSTGRES_PASSWORD: ${MIGRATOR_DB_PASSWORD:?Set MIGRATOR_DB_PASSWORD}
+      DB_USERNAME: blog_app
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+    volumes:
+      - blog_postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-database.sh:/docker-entrypoint-initdb.d/001-app-role.sh:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  migrate:
+    build: .
+    environment:
+      <<: *app-environment
+      MIGRATOR_DB_HOST: postgres
+      MIGRATOR_DB_PORT: 5432
+      MIGRATOR_DB_NAME: ${DB_NAME:?Set DB_NAME}
+      MIGRATOR_DB_USERNAME: ${MIGRATOR_DB_USERNAME:?Set MIGRATOR_DB_USERNAME}
+      MIGRATOR_DB_PASSWORD: ${MIGRATOR_DB_PASSWORD:?Set MIGRATOR_DB_PASSWORD}
+    command: ['node', 'dist/scripts/migrate.js', 'up']
+    depends_on:
+      postgres: {condition: service_healthy}
+    restart: 'no'
+  api:
+    build: .
+    environment: *app-environment
+    ports: ['127.0.0.1:3010:3010']
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: ['CMD', 'node', '-e', 'fetch("http://127.0.0.1:3010/health/ready").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    read_only: true
+    init: true
+    cpus: 1
+    mem_limit: 512m
+    logging:
+      driver: json-file
+      options: {max-size: '10m', max-file: '3'}
+    restart: unless-stopped
+volumes:
+  blog_postgres_data:

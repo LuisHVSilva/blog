@@ -1,0 +1,189 @@
+openapi: 3.1.0
+info: {title: Blog public API, version: 1.0.0}
+paths:
+  /health/live:
+    get:
+      responses:
+        '200': {description: Process is alive; no-store}
+  /health/ready:
+    get:
+      responses:
+        '200': {description: Database is available; no-store}
+        '503': {description: Not ready or stopping; no-store}
+  /api/v1/articles:
+    get:
+      summary: Published translations; no locale fallback
+      parameters:
+        - {$ref: '#/components/parameters/LocaleQuery'}
+        - {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 50, default: 20}}
+        - {name: tag, in: query, schema: {$ref: '#/components/schemas/Slug'}}
+        - {name: series, in: query, schema: {$ref: '#/components/schemas/Slug'}}
+        - {name: difficulty, in: query, schema: {enum: [foundational, intermediate, advanced]}}
+        - {name: q, in: query, schema: {type: string, minLength: 2, maxLength: 100}, description: Literal title/description search}
+        - {name: sort, in: query, schema: {enum: ['publishedAt:asc', 'publishedAt:desc'], default: 'publishedAt:desc'}}
+      responses:
+        '200':
+          description: Public page; maximum shared-cache TTL 60 seconds
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, pagination]
+                properties:
+                  data: {type: array, items: {$ref: '#/components/schemas/ArticleSummary'}}
+                  pagination:
+                    type: object
+                    required: [page, limit, total, totalPages]
+                    properties:
+                      page: {type: integer, minimum: 1}
+                      limit: {type: integer, minimum: 1, maximum: 50}
+                      total: {type: integer, minimum: 0, maximum: 9007199254740991}
+                      totalPages: {type: integer, minimum: 0}
+        '304': {description: Unchanged representation; no body}
+        '400': {$ref: '#/components/responses/Invalid'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /api/v1/articles/by-slug/{locale}/{slug}:
+    get:
+      parameters:
+        - {$ref: '#/components/parameters/LocalePath'}
+        - {$ref: '#/components/parameters/SlugPath'}
+      responses:
+        '200': {description: Published article, content: {application/json: {schema: {$ref: '#/components/schemas/ArticleDetail'}}}}
+        '304': {description: Unchanged representation; no body}
+        '308':
+          description: Alias of a currently public translation
+          headers:
+            Location: {schema: {type: string}, description: Relative API path of the current localized slug}
+        '400': {$ref: '#/components/responses/Invalid'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /api/v1/tags:
+    get:
+      parameters: [{$ref: '#/components/parameters/LocaleQuery'}]
+      responses:
+        '200': {description: Localized tags with public articles, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/Tag'}}}}}
+        '304': {description: Unchanged representation}
+        '400': {$ref: '#/components/responses/Invalid'}
+  /api/v1/series:
+    get:
+      parameters: [{$ref: '#/components/parameters/LocaleQuery'}]
+      responses:
+        '200': {description: Published localized series with visible members, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/Series'}}}}}
+        '304': {description: Unchanged representation}
+        '400': {$ref: '#/components/responses/Invalid'}
+  /api/v1/series/by-slug/{locale}/{slug}:
+    get:
+      parameters: [{$ref: '#/components/parameters/LocalePath'}, {$ref: '#/components/parameters/SlugPath'}]
+      responses:
+        '200': {description: Series and ordered visible navigation, content: {application/json: {schema: {$ref: '#/components/schemas/SeriesDetail'}}}}
+        '304': {description: Unchanged representation}
+        '400': {$ref: '#/components/responses/Invalid'}
+        '404': {$ref: '#/components/responses/NotFound'}
+components:
+  parameters:
+    LocaleQuery: {name: locale, in: query, schema: {type: string, enum: [pt-BR, pt-br, en], default: pt-BR}}
+    LocalePath: {name: locale, in: path, required: true, schema: {type: string, enum: [pt-BR, pt-br, en]}}
+    SlugPath: {name: slug, in: path, required: true, schema: {$ref: '#/components/schemas/Slug'}}
+  responses:
+    Invalid: {description: Unknown, repeated or invalid parameters; no-store, content: {application/json: {schema: {$ref: '#/components/schemas/Error'}}}}
+    NotFound: {description: Missing or non-public resource; RESOURCE_NOT_FOUND; no-store, content: {application/json: {schema: {$ref: '#/components/schemas/Error'}}}}
+    Unavailable: {description: Required dependency unavailable; no-store, content: {application/json: {schema: {$ref: '#/components/schemas/Error'}}}}
+  schemas:
+    Slug: {type: string, minLength: 1, maxLength: 120, pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'}
+    Author:
+      type: object
+      required: [id, displayName, profileSlug]
+      properties:
+        id: {type: string, format: uuid}
+        displayName: {type: string}
+        profileSlug: {$ref: '#/components/schemas/Slug'}
+        bio: {type: string}
+        links: {type: array, items: {type: string, format: uri}}
+    ArticleSummary:
+      type: object
+      required: [articleId, translationId, locale, slug, title, description, difficulty, publishedAt, updatedAt, readingMinutes, canonical, author, tags, series]
+      properties:
+        articleId: {type: string, format: uuid}
+        translationId: {type: string, format: uuid}
+        locale: {enum: [pt-BR, en]}
+        slug: {$ref: '#/components/schemas/Slug'}
+        title: {type: string, minLength: 1, maxLength: 200}
+        description: {type: string, minLength: 1, maxLength: 500}
+        difficulty: {enum: [foundational, intermediate, advanced]}
+        publishedAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        readingMinutes: {type: integer, minimum: 1}
+        canonical: {type: string, format: uri}
+        author: {$ref: '#/components/schemas/Author'}
+        tags: {type: array, items: {type: object, required: [id, key, name, slug]}}
+        series: {type: array, items: {type: object, required: [id, slug, title, position]}}
+    ArticleDetail:
+      allOf:
+        - {$ref: '#/components/schemas/ArticleSummary'}
+        - type: object
+          required: [bodyMarkdown, seo, alternates]
+          properties:
+            bodyMarkdown: {type: string}
+            seo:
+              type: object
+              required: [title, description]
+              properties:
+                title: {type: string}
+                description: {type: string}
+                socialImagePath: {type: string}
+                imageAlt: {type: string}
+            alternates: {type: array, items: {type: object, required: [locale, slug, url]}}
+    Tag:
+      type: object
+      required: [id, key, locale, name, slug, articleCount, canonical]
+      properties:
+        id: {type: string, format: uuid}
+        key: {type: string}
+        locale: {enum: [pt-BR, en]}
+        name: {type: string}
+        slug: {$ref: '#/components/schemas/Slug'}
+        description: {type: string}
+        articleCount: {type: integer, minimum: 0}
+        canonical: {type: string, format: uri}
+    Series:
+      type: object
+      required: [id, locale, slug, title, description, articleCount, canonical]
+      properties:
+        id: {type: string, format: uuid}
+        locale: {enum: [pt-BR, en]}
+        slug: {$ref: '#/components/schemas/Slug'}
+        title: {type: string}
+        description: {type: string}
+        difficulty: {enum: [foundational, intermediate, advanced]}
+        articleCount: {type: integer, minimum: 0}
+        canonical: {type: string, format: uri}
+    SeriesDetail:
+      allOf:
+        - {$ref: '#/components/schemas/Series'}
+        - type: object
+          required: [hasTranslationGaps, members]
+          properties:
+            hasTranslationGaps: {type: boolean}
+            members:
+              type: array
+              items:
+                type: object
+                required: [position, article]
+                properties:
+                  position: {type: integer, minimum: 1}
+                  article: {$ref: '#/components/schemas/ArticleSummary'}
+                  previousArticleId: {type: string, format: uuid}
+                  nextArticleId: {type: string, format: uuid}
+    Error:
+      type: object
+      required: [error, requestId]
+      properties:
+        requestId: {type: string}
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: {type: string}
+            message: {type: string}
+            fields: {type: array, items: {type: object, required: [path, code, message]}}

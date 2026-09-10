@@ -1,0 +1,49 @@
+import type {RequestHandler} from 'express';
+import type {ILogger} from '../infrastructure/logging/logger.interface';
+import {LoggerContext} from '../infrastructure/logging/logger.context';
+import {RequestContext, RequestLogContext} from '../infrastructure/logging/request-context';
+
+export function safelyLog(write: () => Promise<void>): void {
+    try {
+        void write().catch(() => undefined);
+    } catch { /* Logging must not break a response or shutdown. */
+    }
+}
+
+export function requestLog(logger: ILogger, now: () => number = () => performance.now()): RequestHandler {
+    return (req, res, next) => {
+        const started: number = now();
+        const context: RequestLogContext | undefined = RequestContext.get();
+        let logged: boolean = false;
+
+        const complete: () => void = (): void => {
+            if (logged) return;
+            logged = true;
+
+            // Router-declared templates only: no originalUrl, baseUrl or parameter values.
+            const route = typeof req.route?.path === 'string' ? req.route.path : 'unmatched';
+
+            if (context) context.path = route;
+
+            const write: () => void = (): void => safelyLog((): Promise<void> =>
+                logger.logInfo(
+                    new LoggerContext('HTTP', 'complete'),
+                    'Request completed.',
+                    res.statusCode,
+                    {
+                        method: req.method, route, status: res.statusCode,
+                        durationMs: Math.max(0, now() - started), errorCode: res.locals.errorCode,
+                    }));
+
+            if (context) {
+                RequestContext.run(context, write);
+            } else {
+                write();
+            }
+        };
+
+        res.once('finish', complete);
+        res.once('close', complete);
+        next();
+    };
+}

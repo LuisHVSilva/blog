@@ -1,0 +1,48 @@
+name: blog-dev
+
+# Use `npm run dev:compose` so .env.dev also supplies ${...} interpolation.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    env_file: .env.dev
+    environment:
+      POSTGRES_USER: ${MIGRATOR_DB_USERNAME}
+      POSTGRES_PASSWORD: ${MIGRATOR_DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - '127.0.0.1:${DB_PORT}:5432'
+    volumes:
+      - blog_dev_postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-database.sh:/docker-entrypoint-initdb.d/001-app-role.sh:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${MIGRATOR_DB_USERNAME} -d ${DB_NAME}']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  blog-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.develop
+    env_file: .env.dev
+    # The process exits on a fatal error; Docker is the local restart supervisor.
+    restart: unless-stopped
+    environment:
+      NODE_ENV: dev
+      DB_HOST: postgres
+      DB_PORT: 5432
+    ports:
+      - '127.0.0.1:${PORT}:${PORT}'
+    volumes:
+      # Development-only source mount enables live reload; it is not part of the image.
+      - .:/app
+      - blog_dev_node_modules:/app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: npm run dev:api
+
+volumes:
+  blog_dev_postgres_data:
+  blog_dev_node_modules:

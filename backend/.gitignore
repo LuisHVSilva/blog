@@ -1,0 +1,16 @@
+/tmp
+/out-tsc
+/node_modules
+/dist
+
+# Arquivos de ambiente; mantenha apenas exemplos sem credenciais.
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Dependências, logs e configurações locais de IDE.
+node_modules/
+LOGS/
+.idea/
+.vscode/

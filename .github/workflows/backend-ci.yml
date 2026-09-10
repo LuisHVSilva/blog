@@ -1,0 +1,121 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+      - 'content/**'
+      - 'frontend/**'
+      - 'compose.yaml'
+      - 'deploy/**'
+      - '.gitignore'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'content/**'
+      - 'frontend/**'
+      - 'compose.yaml'
+      - 'deploy/**'
+      - '.gitignore'
+      - '.github/workflows/backend-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tooling:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: backend/.node-version
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test:unit
+      - run: npm run test:api
+      - run: npm run build
+      - run: npm run content:validate -- --root ../content --format json
+
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: blog_test_migrations
+          POSTGRES_USER: blog_migrator
+          POSTGRES_PASSWORD: blog_migrator_test_only
+        ports:
+          - 15432:5432
+        options: >-
+          --health-cmd "pg_isready -U blog_migrator -d blog_test_migrations"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 30
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: backend/.node-version
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - name: Create application test role
+        run: PGPASSWORD=blog_migrator_test_only psql -h 127.0.0.1 -p 15432 -U blog_migrator -d blog_test_migrations -c "CREATE ROLE blog_app LOGIN PASSWORD 'blog_app_test_only' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT; GRANT CONNECT ON DATABASE blog_test_migrations TO blog_app; GRANT USAGE ON SCHEMA public TO blog_app;"
+      - run: npm run ci
+        env:
+          TEST_DB_HOST: 127.0.0.1
+          TEST_DB_PORT: 15432
+          TEST_DB_NAME: blog_test_migrations
+          TEST_DB_USERNAME: blog_app
+          TEST_DB_PASSWORD: blog_app_test_only
+          MIGRATOR_DB_HOST: 127.0.0.1
+          MIGRATOR_DB_PORT: 15432
+          MIGRATOR_DB_NAME: blog_test_migrations
+          MIGRATOR_DB_USERNAME: blog_migrator
+          MIGRATOR_DB_PASSWORD: blog_migrator_test_only
+
+  public-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: backend/.node-version
+      - run: docker compose -p blog-p0-ci up --build -d
+      - run: docker compose -p blog-p0-ci run --rm --no-deps site-build npm run lint
+      - name: Compare snapshot, API, rendered HTML and sitemap
+        run: |
+          mkdir -p backend/tmp/p0-ci
+          docker compose -p blog-p0-ci cp content:/snapshot/published-content.json backend/tmp/p0-ci/snapshot.json
+          revision=$(node -p "require('./backend/tmp/p0-ci/snapshot.json').revision")
+          node backend/scripts/release-smoke.mjs backend/tmp/p0-ci/snapshot.json "$revision" http://localhost:8080
+      - if: failure()
+        run: docker compose -p blog-p0-ci logs --tail=80
+      - if: always()
+        run: docker compose -p blog-p0-ci down
