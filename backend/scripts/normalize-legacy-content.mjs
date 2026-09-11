@@ -4,7 +4,7 @@ import {parse, stringify} from 'yaml';
 import {unified} from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
-import {contentRevision} from '../dist/src/modules/publishing/adapters/content-revision.js';
+import {ContentHashService} from '../dist/src/modules/publishing/adapters/content-revision.js';
 
 const project = realpathSync(path.resolve(import.meta.dirname, '../..'));
 const entries = [
@@ -52,7 +52,7 @@ for (const entry of mapping) {
         if (node.children) stack.push(...node.children);
     }
     for (const change of replacements.sort((a, b) => b.start - a.start)) body = body.slice(0, change.start) + change.text + body.slice(change.end);
-    header.sourceRevision = contentRevision({locale: entry.locale, slug: header.slug, title: header.title, description: header.description, bodyMarkdown: body, seo: {title: header.title, description: header.description}});
+    header.sourceRevision = new ContentHashService().revision({locale: entry.locale, slug: header.slug, title: header.title, description: header.description, bodyMarkdown: body, seo: {title: header.title, description: header.description}});
     normalized.push({entry, target, header, body});
 }
 for (const item of normalized) {

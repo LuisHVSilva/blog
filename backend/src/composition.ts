@@ -1,12 +1,11 @@
+import {PublishingQueriesComposition} from './infrastructures/di/publishingQueries.composition';
 import type {Express, RequestHandler} from 'express';
 import type {Config} from './config/env';
 import {createApp} from './http/app';
 import {HealthRoutes, Readiness} from './http/health.routes';
-import {Logger} from './infrastructure/logger';
-import {Database} from './infrastructure/database';
-import {Models} from './modules/publishing/adapters/postgres/models';
-import {PostgresArticleReader} from './modules/publishing/adapters/postgres/article-reader';
-import {createArticleRouter} from './modules/publishing/adapters/http/articles.routes';
+import {Logger} from './infrastructures/logger';
+import {Database} from './infrastructures/database';
+import {ArticlesRouter} from './modules/publishing/adapters/http/articles.routes';
 
 // export class Composition {
 //     private readonly _config: Config;
@@ -25,7 +24,6 @@ import {createArticleRouter} from './modules/publishing/adapters/http/articles.r
 //         const models = new Models(database.getSequelize());
 //         models.registerEditorialModels();
 //
-//         const articleReader = new PostgresArticleReader(database.getSequelize(), this._config.publicSiteUrl.replace(/\/$/u, ''));
 //         const readiness: Readiness = HealthRoutes.createReadiness(() => database.checkReady(), () => state.stopping);
 //         const app: Express = createApp({
 //             config: this._config,
@@ -34,7 +32,7 @@ import {createArticleRouter} from './modules/publishing/adapters/http/articles.r
 //             routes: [...this._routes, createArticleRouter(articleReader)]
 //         });
 //
-//         return {app, database, logger, state, readiness, articleReader};
+//         return {app, database, logger, state, readiness};
 //     }
 // }
 
@@ -43,17 +41,14 @@ export function createComposition(config: Config, routes: readonly RequestHandle
     const logger = new Logger({service: config.service});
     const database = new Database(config.database);
 
-    const models = new Models(database.getSequelize());
-    models.registerEditorialModels();
 
-    const articleReader = new PostgresArticleReader(database.getSequelize(), config.publicSiteUrl.replace(/\/$/u, ''));
     const readiness: Readiness = HealthRoutes.createReadiness(() => database.checkReady(), () => state.stopping);
     const app: Express = createApp({
         config,
         logger,
         readiness,
-        routes: [...routes, createArticleRouter(articleReader)]
+        routes: [...routes, new ArticlesRouter(PublishingQueriesComposition.create(database.getSequelize(), config.publicSiteUrl.replace(/\/$/u, ''))).createRouter()]
     });
 
-    return {app, database, logger, state, readiness, articleReader};
+    return {app, database, logger, state, readiness};
 }

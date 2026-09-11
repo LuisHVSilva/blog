@@ -160,13 +160,13 @@ P0 termina em12; P1 em20. Em21–26, verifique o gatilho documentado; se ausente
 - `backend/src/http/error-handler.ts` — mover de backend/src/shared/middlewares/errorHandler.middleware.ts; Envelope público, mapeamento de parser e proteção de headersSent.
 - `backend/src/http/error-status.ts` — mover de backend/src/framework/http/application-error-status.mapper.ts; Mapear kinds semânticos para status.
 - `backend/src/shared/errors/application.error.ts` — alterar; Acrescentar kinds/fields sem importar HTTP.
-- `backend/src/infrastructure/logger.ts` — mover de backend/src/infrastructures/logger/logger.ts; Reutilizar escrita JSON/stdout e injetar service.
-- `backend/src/infrastructure/logging/formatter.ts` — mover de backend/src/infrastructures/logger/formatter/logger.formater.ts; Formato existente com campos permitidos.
-- `backend/src/infrastructure/logging/redact-sensitive.ts` — mover de backend/src/infrastructures/logger/redact-sensitive.ts; Preservar algoritmo testado; retirar promessa de log irrestrito.
-- `backend/src/infrastructure/logging/request-context.ts` — mover de backend/src/infrastructures/logger/context/request.context.ts; ALS exclusivo de observabilidade.
-- `backend/src/infrastructure/logging/logger.interface.ts` — mover de backend/src/infrastructures/logger/logger.interface.ts; Contrato existente de logger; unknown em vez de any.
-- `backend/src/infrastructure/logging/logger.context.ts` — mover de backend/src/infrastructures/logger/context/logger.context.ts; Contexto de origem do evento de log.
-- `backend/src/infrastructure/process-handlers.ts` — mover de backend/src/infrastructures/logger/process-error-handlers.ts; Reutilizar fatal shutdown, registrar também sinais e permitir cleanup dos handlers em teste.
+- `backend/src/infrastructures/logger.ts` — mover de backend/src/infrastructures/logger/logger.ts; Reutilizar escrita JSON/stdout e injetar service.
+- `backend/src/infrastructures/logging/formatter.ts` — mover de backend/src/infrastructures/logger/formatter/logger.formater.ts; Formato existente com campos permitidos.
+- `backend/src/infrastructures/logging/redact-sensitive.ts` — mover de backend/src/infrastructures/logger/redact-sensitive.ts; Preservar algoritmo testado; retirar promessa de log irrestrito.
+- `backend/src/infrastructures/logging/request-context.ts` — mover de backend/src/infrastructures/logger/context/request.context.ts; ALS exclusivo de observabilidade.
+- `backend/src/infrastructures/logging/logger.interface.ts` — mover de backend/src/infrastructures/logger/logger.interface.ts; Contrato existente de logger; unknown em vez de any.
+- `backend/src/infrastructures/logging/logger.context.ts` — mover de backend/src/infrastructures/logger/context/logger.context.ts; Contexto de origem do evento de log.
+- `backend/src/infrastructures/process-handlers.ts` — mover de backend/src/infrastructures/logger/process-error-handlers.ts; Reutilizar fatal shutdown, registrar também sinais e permitir cleanup dos handlers em teste.
 - `backend/package.json` — alterar; start passa a node dist/src/main.js; dev:api executa tsx watch src/main.ts.
 
 **Dependências existentes reutilizadas:**
@@ -211,7 +211,7 @@ P0 termina em12; P1 em20. Em21–26, verifique o gatilho documentado; se ausente
 
 **Arquivos alterados/movidos (preservar implementação útil):**
 
-- `backend/src/infrastructure/database.ts` — mover de backend/src/infrastructures/persistence/ORM/index.sequelize.ts; Conexão única, pool/timeouts e nenhuma criação automática de schema.
+- `backend/src/infrastructures/database.ts` — mover de backend/src/infrastructures/persistence/ORM/index.sequelize.ts; Conexão única, pool/timeouts e nenhuma criação automática de schema.
 - `backend/package.json` — alterar; Scripts migrate, migrate:status, test:integration/test:api e dependências ORM usadas.
 - `backend/.env.example` — alterar; Pool/timeouts e instruções para credenciais distintas, sem segredo de produção.
 
@@ -304,7 +304,7 @@ P0 termina em12; P1 em20. Em21–26, verifique o gatilho documentado; se ausente
 
 **Dependências existentes reutilizadas:**
 
-- `backend/src/infrastructure/database.ts` — Conexão e transações já preparadas em [E03](./BACKEND_IMPLEMENTATION_PLAN.md#e03-conex%C3%A3o-postgresql-e-executor-de-migrations).
+- `backend/src/infrastructures/database.ts` — Conexão e transações já preparadas em [E03](./BACKEND_IMPLEMENTATION_PLAN.md#e03-conex%C3%A3o-postgresql-e-executor-de-migrations).
 
 **Testes criados no mesmo incremento:**
 
@@ -767,7 +767,7 @@ P0 termina em12; P1 em20. Em21–26, verifique o gatilho documentado; se ausente
 - `backend/src/modules/identity/adapters/cli/manage-user.ts` — Admin operacional com ID e motivo; bootstrap explícito.
 - `backend/migrations/004-security-controls.ts` — Rate limit temporário e auditoria administrativa restrita.
 - `backend/src/http/rate-limit.ts` — Traduz limites de ação e Retry-After para HTTP.
-- `backend/src/infrastructure/rate-limiter.ts` — Counters temporários PostgreSQL atômicos e chaves de origem pseudonimizadas.
+- `backend/src/infrastructures/rate-limiter.ts` — Counters temporários PostgreSQL atômicos e chaves de origem pseudonimizadas.
 
 **Arquivos alterados/movidos (preservar implementação útil):**
 
@@ -1021,7 +1021,7 @@ P0 termina em12; P1 em20. Em21–26, verifique o gatilho documentado; se ausente
 
 **Arquivos criados:**
 
-- `backend/src/infrastructure/metrics.ts` — Métricas limitadas de HTTP/pool/ações, sem PII em labels.
+- `backend/src/infrastructures/metrics.ts` — Métricas limitadas de HTTP/pool/ações, sem PII em labels.
 - `backend/scripts/community-smoke.mjs` — Fluxo integrado staging com usuários de teste e cleanup.
 - `docs/COMMUNITY_OPERATIONS.md` — Fila, abuso, papéis, métricas e capacidade humana.
 - `docs/adr/004-sessions.md` — Cookies opacos, revogação e CSRF.
@@ -1339,20 +1339,20 @@ P0 termina em12; P1 em20. Em21–26, verifique o gatilho documentado; se ausente
 
 - `docs/PERFORMANCE_DECISIONS.md` — Baseline, gargalo, experimento, ganho e critério de rollback por subcapacidade.
 - `backend/scripts/load-test.mjs` — Carga reproduzível com dados sintéticos e relatório sem PII.
-- `backend/src/infrastructure/public-cache-store.ts` — Cache externo opcional de representações públicas com invalidação.
+- `backend/src/infrastructures/public-cache-store.ts` — Cache externo opcional de representações públicas com invalidação.
 - `backend/scripts/reconcile-stats.ts` — Reconciliar counters quando materialização existir.
 - `backend/src/workers/blog-worker.ts` — Consumir outbox idempotente apenas sob backlog comprovado.
-- `backend/src/infrastructure/tracing.ts` — Tracing opcional sem dados privados quando houver múltiplos processos.
+- `backend/src/infrastructures/tracing.ts` — Tracing opcional sem dados privados quando houver múltiplos processos.
 - `backend/src/modules/publishing/application/ports/editorial-asset-store.ts` — Capacidade de mídia editorial autorizada quando necessária.
 - `backend/src/modules/publishing/adapters/storage/editorial-asset-store.ts` — Object storage e validação de assets, sem filesystem efêmero.
 - `backend/migrations/014-measured-optimizations.ts` — Apenas alterações efetivamente escolhidas: outbox/counters/partições; dividir em novas versões se entregas distintas.
 
 **Arquivos alterados/movidos (preservar implementação útil):**
 
-- `backend/src/infrastructure/rate-limiter.ts` — alterar; Adapter Redis opcional só se PG for gargalo, preservando contrato.
+- `backend/src/infrastructures/rate-limiter.ts` — alterar; Adapter Redis opcional só se PG for gargalo, preservando contrato.
 - `backend/src/modules/community/adapters/postgres/view-recorder.ts` — alterar; Manter v1 ou adaptar batching versionado somente sob ADR explícito.
 - `backend/src/modules/community/adapters/postgres/stats-reader.ts` — alterar; Counters materializados/replicas apenas após medida e sem mudar escopo.
-- `backend/src/infrastructure/database.ts` — alterar; Pools/topologia de réplicas/PgBouncer mediante teste.
+- `backend/src/infrastructures/database.ts` — alterar; Pools/topologia de réplicas/PgBouncer mediante teste.
 - `backend/src/composition.ts` — alterar; Selecionar adapters por config validada, sem opções mortas.
 - `docs/BACKEND_OPERATIONS.md` — alterar; Novas dependências, restore, rollback, métricas e recuperação.
 - `backend/src/config/env.ts` — alterar; Validar configurações/secrets/prazos da capacidade [E26](./BACKEND_IMPLEMENTATION_PLAN.md#e26-escalar-apenas-o-gargalo-medido) somente quando habilitada; não permitir defaults inseguros em produção.

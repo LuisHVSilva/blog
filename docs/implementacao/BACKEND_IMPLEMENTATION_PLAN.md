@@ -508,13 +508,13 @@ Mover implementação, não criar segundo servidor/logger. main é o único dono
 | [ALTERAR — MOVER/REUTILIZAR] | backend/src/http/error-handler.ts | Envelope público, mapeamento de parser e proteção de headersSent. |
 | [ALTERAR — MOVER/REUTILIZAR] | backend/src/http/error-status.ts | Mapear kinds semânticos para status. |
 | [ALTERAR] | backend/src/shared/errors/application.error.ts | Acrescentar kinds/fields sem importar HTTP. |
-| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructure/logger.ts | Reutilizar escrita JSON/stdout e injetar service. |
-| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructure/logging/formatter.ts | Formato existente com campos permitidos. |
-| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructure/logging/redact-sensitive.ts | Preservar algoritmo testado; retirar promessa de log irrestrito. |
-| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructure/logging/request-context.ts | ALS exclusivo de observabilidade. |
-| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructure/logging/logger.interface.ts | Contrato existente de logger; unknown em vez de any. |
-| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructure/logging/logger.context.ts | Contexto de origem do evento de log. |
-| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructure/process-handlers.ts | Reutilizar fatal shutdown, registrar também sinais e permitir cleanup dos handlers em teste. |
+| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructures/logger.ts | Reutilizar escrita JSON/stdout e injetar service. |
+| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructures/logging/formatter.ts | Formato existente com campos permitidos. |
+| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructures/logging/redact-sensitive.ts | Preservar algoritmo testado; retirar promessa de log irrestrito. |
+| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructures/logging/request-context.ts | ALS exclusivo de observabilidade. |
+| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructures/logging/logger.interface.ts | Contrato existente de logger; unknown em vez de any. |
+| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructures/logging/logger.context.ts | Contexto de origem do evento de log. |
+| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructures/process-handlers.ts | Reutilizar fatal shutdown, registrar também sinais e permitir cleanup dos handlers em teste. |
 | [ALTERAR] | backend/package.json | start passa a node dist/src/main.js; dev:api executa tsx watch src/main.ts. |
 
 Movimentações preservam a implementação e retiram o caminho de origem ao atualizar consumidores. Não manter cópias de servidor/logger/store com duas autoridades. Imports com aliases nos arquivos atuais afetados também são ajustados em [E01](#e01-tornar-execut%C3%A1veis-os-comandos-e-preservar-a-base-existente)/[E02](#e02-separar-composi%C3%A7%C3%A3o-http-configura%C3%A7%C3%A3o-e-ciclo-de-vida); isso é evolução mecânica do mesmo arquivo. O histórico consolidado está em [estrutura](./BACKEND_IMPLEMENTATION_STRUCTURE.md#hist%C3%B3rico-de-arquivos-que-evoluem).
@@ -592,7 +592,7 @@ Sequelize 6 como único adapter de acesso ao PostgreSQL. SQL parametrizado atrav
 
 | Ação | Caminho relativo à raiz | Responsabilidade |
 | --- | --- | --- |
-| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructure/database.ts | Conexão única, pool/timeouts e nenhuma criação automática de schema. |
+| [ALTERAR — MOVER/REUTILIZAR] | backend/src/infrastructures/database.ts | Conexão única, pool/timeouts e nenhuma criação automática de schema. |
 | [CRIAR] | backend/scripts/migrate.ts | Executar/consultar migrations versionadas com lock/checksum e credencial operacional. |
 | [CRIAR] | backend/migrations/runner.ts | Contrato Migration up(sequelize,transaction), controle e atomicidade sem aparecer no domínio. |
 | [CRIAR] | backend/compose.test.yaml | PostgreSQL 16 isolado para testes. |
@@ -752,7 +752,7 @@ Modelo conceitual da seção 5 da arquitetura, com nomes snake_case no banco e D
 | [CRIAR] | backend/migrations/002-editorial-paths.ts | Namespace único de slugs/redirects e consistência diferida. |
 | [CRIAR] | backend/src/modules/publishing/adapters/postgres/models.ts | Definições Sequelize explícitas, registro único e mapeamento snake_case. |
 | [ALTERAR] | backend/src/composition.ts | Registrar models e criar adapters com a instância única. |
-| [EXISTENTE] | backend/src/infrastructure/database.ts | Conexão e transações já preparadas em [E03](#e03-conex%C3%A3o-postgresql-e-executor-de-migrations). |
+| [EXISTENTE] | backend/src/infrastructures/database.ts | Conexão e transações já preparadas em [E03](#e03-conex%C3%A3o-postgresql-e-executor-de-migrations). |
 
 Movimentações preservam a implementação e retiram o caminho de origem ao atualizar consumidores. Não manter cópias de servidor/logger/store com duas autoridades. Imports com aliases nos arquivos atuais afetados também são ajustados em [E01](#e01-tornar-execut%C3%A1veis-os-comandos-e-preservar-a-base-existente)/[E02](#e02-separar-composi%C3%A7%C3%A3o-http-configura%C3%A7%C3%A3o-e-ciclo-de-vida); isso é evolução mecânica do mesmo arquivo. O histórico consolidado está em [estrutura](./BACKEND_IMPLEMENTATION_STRUCTURE.md#hist%C3%B3rico-de-arquivos-que-evoluem).
 
@@ -1588,7 +1588,7 @@ Autorização de negócio nos casos de uso e revalidação do estado do ator no 
 | [ALTERAR] | backend/src/modules/identity/adapters/postgres/identity-store.ts | Lock de usuário, atualização e revogação/auditoria atômicas. |
 | [CRIAR] | backend/migrations/004-security-controls.ts | Rate limit temporário e auditoria administrativa restrita. |
 | [CRIAR] | backend/src/http/rate-limit.ts | Traduz limites de ação e Retry-After para HTTP. |
-| [CRIAR] | backend/src/infrastructure/rate-limiter.ts | Counters temporários PostgreSQL atômicos e chaves de origem pseudonimizadas. |
+| [CRIAR] | backend/src/infrastructures/rate-limiter.ts | Counters temporários PostgreSQL atômicos e chaves de origem pseudonimizadas. |
 | [ALTERAR] | backend/src/composition.ts | Injetar política/capacidade de abuso nas mutações. |
 | [ALTERAR] | backend/openapi.yaml | Documentar 403/429/503 e necessidade de reautenticação. |
 | [ALTERAR] | backend/src/config/env.ts | Validar configurações/secrets/prazos da capacidade [E15](#e15-aplicar-permiss%C3%B5es-bloqueio-e-limites-de-abuso) somente quando habilitada; não permitir defaults inseguros em produção. |
@@ -2032,7 +2032,7 @@ Reutilizar logs e controles; métricas de baixa cardinalidade por rota template/
 
 | Ação | Caminho relativo à raiz | Responsabilidade |
 | --- | --- | --- |
-| [CRIAR] | backend/src/infrastructure/metrics.ts | Métricas limitadas de HTTP/pool/ações, sem PII em labels. |
+| [CRIAR] | backend/src/infrastructures/metrics.ts | Métricas limitadas de HTTP/pool/ações, sem PII em labels. |
 | [ALTERAR] | backend/src/http/request-log.ts | Acrescentar observação de histogramas mantendo logs e redação. |
 | [ALTERAR] | backend/src/http/app.ts | Métricas internas protegidas e gate comunitário. |
 | [CRIAR] | backend/scripts/community-smoke.mjs | Fluxo integrado staging com usuários de teste e cleanup. |
@@ -2568,16 +2568,16 @@ Ports existentes permitem trocar mecanismo externo sem duplicar aplicação. Cad
 | --- | --- | --- |
 | [CRIAR] | docs/PERFORMANCE_DECISIONS.md | Baseline, gargalo, experimento, ganho e critério de rollback por subcapacidade. |
 | [CRIAR] | backend/scripts/load-test.mjs | Carga reproduzível com dados sintéticos e relatório sem PII. |
-| [CRIAR] | backend/src/infrastructure/public-cache-store.ts | Cache externo opcional de representações públicas com invalidação. |
-| [ALTERAR] | backend/src/infrastructure/rate-limiter.ts | Adapter Redis opcional só se PG for gargalo, preservando contrato. |
+| [CRIAR] | backend/src/infrastructures/public-cache-store.ts | Cache externo opcional de representações públicas com invalidação. |
+| [ALTERAR] | backend/src/infrastructures/rate-limiter.ts | Adapter Redis opcional só se PG for gargalo, preservando contrato. |
 | [ALTERAR] | backend/src/modules/community/adapters/postgres/view-recorder.ts | Manter v1 ou adaptar batching versionado somente sob ADR explícito. |
 | [ALTERAR] | backend/src/modules/community/adapters/postgres/stats-reader.ts | Counters materializados/replicas apenas após medida e sem mudar escopo. |
 | [CRIAR] | backend/scripts/reconcile-stats.ts | Reconciliar counters quando materialização existir. |
 | [CRIAR] | backend/src/workers/blog-worker.ts | Consumir outbox idempotente apenas sob backlog comprovado. |
-| [CRIAR] | backend/src/infrastructure/tracing.ts | Tracing opcional sem dados privados quando houver múltiplos processos. |
+| [CRIAR] | backend/src/infrastructures/tracing.ts | Tracing opcional sem dados privados quando houver múltiplos processos. |
 | [CRIAR] | backend/src/modules/publishing/application/ports/editorial-asset-store.ts | Capacidade de mídia editorial autorizada quando necessária. |
 | [CRIAR] | backend/src/modules/publishing/adapters/storage/editorial-asset-store.ts | Object storage e validação de assets, sem filesystem efêmero. |
-| [ALTERAR] | backend/src/infrastructure/database.ts | Pools/topologia de réplicas/PgBouncer mediante teste. |
+| [ALTERAR] | backend/src/infrastructures/database.ts | Pools/topologia de réplicas/PgBouncer mediante teste. |
 | [ALTERAR] | backend/src/composition.ts | Selecionar adapters por config validada, sem opções mortas. |
 | [ALTERAR] | docs/BACKEND_OPERATIONS.md | Novas dependências, restore, rollback, métricas e recuperação. |
 | [CRIAR] | backend/migrations/014-measured-optimizations.ts | Apenas alterações efetivamente escolhidas: outbox/counters/partições; dividir em novas versões se entregas distintas. |
@@ -2642,7 +2642,7 @@ Melhoria entregue somente com diagnóstico/ganho/reversão documentados e regres
 | Publicação | backend/src/modules/publishing/application/publish-translation.ts | [E07](#e07-importar-publicar-despublicar-e-arquivar-atomicamente)/P0 nasce: política de estado/primeira data e CLI protegido. | [E16](#e16-entregar-curtidas-idempotentes-e-estado-privado)–[E19](#e19-excluir-contas-exportar-dados-e-executar-reten%C3%A7%C3%A3o)/P1 testes comprovam que import/publicação conserva interações; nenhuma nova regra auth pública de publicar. | [E24](#e24-evoluir-opera%C3%A7%C3%A3o-editorial-e-ativa%C3%A7%C3%A3o-de-releases-sob-necessidade)/P2 se ativação necessária, acrescenta release candidata, preservando UUID/datas. | [E07-U01](./BACKEND_TEST_PLAN.md#e07-u01)/[I01](./BACKEND_TEST_PLAN.md#e07-i01)/[I03](./BACKEND_TEST_PLAN.md#e07-i03); [E16-I02](./BACKEND_TEST_PLAN.md#e16-i02); [E24-U02](./BACKEND_TEST_PLAN.md#e24-u02)/[I02](./BACKEND_TEST_PLAN.md#e24-i02) |
 | Consulta | backend/src/modules/publishing/adapters/postgres/article-reader.ts | [E08](#e08-consultar-artigos-tags-e-s%C3%A9ries-publicados)/P0 listas/detalhe/séries, [E10](#e10-exportar-snapshot-e-integrar-publica%C3%A7%C3%A3o-com-o-site) export snapshot consistente. | P1 continua editorial sem estado privado/contadores embutidos. | [E23](#e23-busca-por-idioma-e-relacionados-editoriais) full-text/related; [E24](#e24-evoluir-opera%C3%A7%C3%A3o-editorial-e-ativa%C3%A7%C3%A3o-de-releases-sob-necessidade) leitura por release; mesmas regras públicas. | [E08-I01](./BACKEND_TEST_PLAN.md#e08-i01)/[I02](./BACKEND_TEST_PLAN.md#e08-i02)/[I03](./BACKEND_TEST_PLAN.md#e08-i03); [E10-I01](./BACKEND_TEST_PLAN.md#e10-i01); [E23-I01](./BACKEND_TEST_PLAN.md#e23-i01)/[I02](./BACKEND_TEST_PLAN.md#e23-i02); [E24-I02](./BACKEND_TEST_PLAN.md#e24-i02) |
 | Escrita editorial | backend/src/modules/publishing/adapters/postgres/publication-store.ts | [E07](#e07-importar-publicar-despublicar-e-arquivar-atomicamente)/P0 CAS/upsert/paths atômicos. | P1 regressão com likes/comments preservados. | [E22](#e22-respostas-limitadas-e-progresso-expl%C3%ADcito-de-leitura) prerequisites opcionais; [E23](#e23-busca-por-idioma-e-relacionados-editoriais) índice/curadoria; [E24](#e24-evoluir-opera%C3%A7%C3%A3o-editorial-e-ativa%C3%A7%C3%A3o-de-releases-sob-necessidade) candidatos imutáveis. | [E07-I01](./BACKEND_TEST_PLAN.md#e07-i01)/[I02](./BACKEND_TEST_PLAN.md#e07-i02)/[I03](./BACKEND_TEST_PLAN.md#e07-i03); [E16-I02](./BACKEND_TEST_PLAN.md#e16-i02); [E22-I02](./BACKEND_TEST_PLAN.md#e22-i02); [E23-I01](./BACKEND_TEST_PLAN.md#e23-i01); [E24-I02](./BACKEND_TEST_PLAN.md#e24-i02) |
-| Infra de processo | backend/src/main.ts; backend/src/http/app.ts; backend/src/infrastructure/database.ts | [E02](#e02-separar-composi%C3%A7%C3%A3o-http-configura%C3%A7%C3%A3o-e-ciclo-de-vida)/[E03](#e03-conex%C3%A3o-postgresql-e-executor-de-migrations) movem/reusam startup/HTTP/DB e completam limites. | [E14](#e14-implementar-login-github-sess%C3%A3o-e-logout-seguros) rotas auth; [E20](#e20-habilitar-comunidade-com-observabilidade-e-opera%C3%A7%C3%A3o-completas) gate/métricas, sem recriar app. | [E26](#e26-escalar-apenas-o-gargalo-medido) topologia/pools/adapters opcionais. | [E02-I02](./BACKEND_TEST_PLAN.md#e02-i02); [E14-I01](./BACKEND_TEST_PLAN.md#e14-i01)/[I02](./BACKEND_TEST_PLAN.md#e14-i02); [E20-U01](./BACKEND_TEST_PLAN.md#e20-u01); [E26-I02](./BACKEND_TEST_PLAN.md#e26-i02) |
+| Infra de processo | backend/src/main.ts; backend/src/http/app.ts; backend/src/infrastructures/database.ts | [E02](#e02-separar-composi%C3%A7%C3%A3o-http-configura%C3%A7%C3%A3o-e-ciclo-de-vida)/[E03](#e03-conex%C3%A3o-postgresql-e-executor-de-migrations) movem/reusam startup/HTTP/DB e completam limites. | [E14](#e14-implementar-login-github-sess%C3%A3o-e-logout-seguros) rotas auth; [E20](#e20-habilitar-comunidade-com-observabilidade-e-opera%C3%A7%C3%A3o-completas) gate/métricas, sem recriar app. | [E26](#e26-escalar-apenas-o-gargalo-medido) topologia/pools/adapters opcionais. | [E02-I02](./BACKEND_TEST_PLAN.md#e02-i02); [E14-I01](./BACKEND_TEST_PLAN.md#e14-i01)/[I02](./BACKEND_TEST_PLAN.md#e14-i02); [E20-U01](./BACKEND_TEST_PLAN.md#e20-u01); [E26-I02](./BACKEND_TEST_PLAN.md#e26-i02) |
 | Comentários | backend/src/modules/community/domain/comment.ts; adapters/postgres/comment-store.ts | P0 ausente. | [E17](#e17-coment%C3%A1rios-moderados-e-den%C3%BAncias-oper%C3%A1veis)/P1 plano/pending/CAS/tombstone, moderação real. | [E22](#e22-respostas-limitadas-e-progresso-expl%C3%ADcito-de-leitura)/P2 parent de mesmo locale/profundidade1, preserva política anterior. | [E17-U01](./BACKEND_TEST_PLAN.md#e17-u01)/[I01](./BACKEND_TEST_PLAN.md#e17-i01)/[I02](./BACKEND_TEST_PLAN.md#e17-i02)/[I03](./BACKEND_TEST_PLAN.md#e17-i03); [E22-U01](./BACKEND_TEST_PLAN.md#e22-u01)/[I01](./BACKEND_TEST_PLAN.md#e22-i01) |
 | Stats | backend/src/modules/community/adapters/postgres/stats-reader.ts | P0 ausente. | [E18](#e18-registrar-views-deduplicadas-e-estat%C3%ADsticas-reais) COUNT/agregado diário; [E19](#e19-excluir-contas-exportar-dados-e-executar-reten%C3%A7%C3%A3o) mensal sem duplicação. | [E26](#e26-escalar-apenas-o-gargalo-medido) materialização/replica apenas com necessidade e reconciliação. | [E18-I01](./BACKEND_TEST_PLAN.md#e18-i01)/[I03](./BACKEND_TEST_PLAN.md#e18-i03); [E19-I03](./BACKEND_TEST_PLAN.md#e19-i03); [E26-I02](./BACKEND_TEST_PLAN.md#e26-i02) |
 | Privacidade | backend/src/modules/identity/adapters/postgres/account-lifecycle-store.ts | P0 ausente. | [E19](#e19-excluir-contas-exportar-dados-e-executar-reten%C3%A7%C3%A3o) purge/export manual/ledger transacional. | [E21](#e21-conta-local-com-confirma%C3%A7%C3%A3o-e-recupera%C3%A7%C3%A3o-completas) credenciais; [E22](#e22-respostas-limitadas-e-progresso-expl%C3%ADcito-de-leitura) progresso; [E25](#e25-automatizar-atendimento-de-privacidade-quando-houver-demanda) entrega automática/cancelamento. | [E19-I01](./BACKEND_TEST_PLAN.md#e19-i01)/[I02](./BACKEND_TEST_PLAN.md#e19-i02)/[I03](./BACKEND_TEST_PLAN.md#e19-i03); [E21-I02](./BACKEND_TEST_PLAN.md#e21-i02); [E22-I02](./BACKEND_TEST_PLAN.md#e22-i02); [E25-I01](./BACKEND_TEST_PLAN.md#e25-i01)/[I02](./BACKEND_TEST_PLAN.md#e25-i02) |

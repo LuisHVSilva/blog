@@ -1,8 +1,8 @@
 import type {ErrorRequestHandler} from 'express';
 import {ConnectionAcquireTimeoutError, ConnectionError} from 'sequelize';
 import {ApplicationError} from '../shared/errors/application.error';
-import type {ILogger} from '../infrastructure/logging/logger.interface';
-import {LoggerContext} from '../infrastructure/logging/logger.context';
+import type {ILogger} from '../infrastructures/logging/logger.interface';
+import {LoggerContext} from '../infrastructures/logging/logger.context';
 import {mapApplicationErrorStatus} from './error-status';
 import {getRequestId} from './request-context';
 import {HttpBoundaryError} from './http-error';

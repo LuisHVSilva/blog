@@ -1,5 +1,5 @@
 export type BaseModelType = {
-    id: number;
+    id: string;
     createdAt?: Date;
     updatedAt?: Date;
 };

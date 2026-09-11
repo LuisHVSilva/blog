@@ -1,4 +1,5 @@
-import {Sequelize} from 'sequelize';
+import {Sequelize} from 'sequelize-typescript';
+import {editorialModels} from '../../src/infrastructures/persistence/ORM/modelRegistry';
 import {loadConfig, type Config} from '../../src/config/env';
 
 export function testEnvironment(overrides: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
@@ -34,6 +35,7 @@ export function migratorConfig(env: NodeJS.ProcessEnv): Config['database'] {
 
 export function databaseFor(config: Config['database']): Sequelize {
     return new Sequelize({
+        repositoryMode: true, models: editorialModels,
         dialect: 'postgres', database: config.name, host: config.host, port: config.port,
         username: config.username, password: config.password, logging: false,
         pool: {max: config.poolMax, min: 0, acquire: config.acquireMs},

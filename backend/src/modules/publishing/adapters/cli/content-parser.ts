@@ -5,7 +5,7 @@ import {EditorialRules} from '../../domain/article';
 import type {ParsedContent} from '../../application/validate-content';
 import type {EditorialCatalog} from '../../application/editorial-catalog';
 import {catalogSchema} from './catalog-schema';
-import {contentRevision} from '../content-revision';
+import {ContentHashService} from '../content-revision';
 import {z} from 'zod';
 
 function record(value: unknown, label: string): Record<string, unknown> {
@@ -64,7 +64,7 @@ export async function parseContentRoot(root: string): Promise<ParsedContent[] & 
             const updatedAt = values.updatedAt === undefined ? undefined : z.iso.datetime().parse(values.updatedAt);
             const publishedAt = values.publishedAt === undefined ? undefined : z.iso.datetime().parse(values.publishedAt);
             if ([updatedAt, publishedAt].some((date) => date && Date.parse(date) > Date.now())) throw new Error(`${name}: future editorial date.`);
-            const revision = contentRevision({locale, slug: text(values.slug, 'slug'), title: text(values.title, 'title'), description: text(values.description, 'description'), bodyMarkdown: body, seo});
+            const revision = new ContentHashService().revision({locale, slug: text(values.slug, 'slug'), title: text(values.title, 'title'), description: text(values.description, 'description'), bodyMarkdown: body, seo});
             if (values.sourceRevision !== undefined && values.sourceRevision !== revision) throw new Error(`${name}: SOURCE_REVISION_MISMATCH.`);
             const translatedFromRevision = values.translatedFromRevision === undefined ? undefined : z.string().regex(/^[a-f0-9]{64}$/u).parse(values.translatedFromRevision);
             const tree = unified().use(remarkParse).use(remarkGfm).parse(body);

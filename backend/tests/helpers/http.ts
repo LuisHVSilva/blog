@@ -2,8 +2,8 @@ import {Router} from 'express';
 import {loadConfig} from '../../src/config/env';
 import {createApp, jsonMutation} from '../../src/http/app';
 import {HealthRoutes} from '../../src/http/health.routes';
-import {LogFormatter} from '../../src/infrastructure/logging/formatter';
-import type {ILogger} from '../../src/infrastructure/logging/logger.interface';
+import {LogFormatter} from '../../src/infrastructures/logging/formatter';
+import type {ILogger} from '../../src/infrastructures/logging/logger.interface';
 import {ApplicationError, type ApplicationErrorKind} from '../../src/shared/errors/application.error';
 
 export const localEnv = {

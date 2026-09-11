@@ -3,7 +3,7 @@ import {mkdirSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import test from 'node:test';
-import {redactSensitive} from '../../src/infrastructure/logging/redact-sensitive';
+import {redactSensitive} from '../../src/infrastructures/logging/redact-sensitive';
 import {backendRoot, runnerPath, runNode, temporaryDirectory} from '../helpers/tooling';
 
 test('E01-U01: redacts nested objects and arrays without changing ordinary values or the input', () => {
@@ -92,7 +92,11 @@ test('E01: lint rejects forbidden dependencies and accepts domain/ports', (t) =>
         ['domain', "import {Other} from '../../../shared/domain/other';", false],
         ['application', "import {article} from '../domain/article'; import type {Store} from './ports/store';", true],
         ['application', "import type {Identity} from '../../identity/application/ports/identity';", true],
-        ['adapters', "import {getArticle} from '../application/get-article';", true],
+        ['adapters', "import {GetArticleUseCase} from '../application/useCases/getArticle/getArticle.useCase';", true],
+        ['application/useCases/listArticles', "import type {IUseCase} from '../../../../../shared/interfaces/useCase.interface';", true],
+        ['application/useCases/listArticles', "import type {IArticleService} from '../../../domain/services/article.service.interface';", true],
+        ['application/useCases/listArticles', "import type {IPublicArticleRepository} from '../../../domain/repositories/publicArticle.repository.interface';", false],
+        ['application/useCases/listArticles', "import type {ArticleReader} from '../../ports/article-reader';", false],
     ] as const;
     // lintText applies the real config to virtual future module paths.
     for (const [layer, code, valid] of fixtures) {

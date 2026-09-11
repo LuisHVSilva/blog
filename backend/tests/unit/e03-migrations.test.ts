@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {migrationChecksum, MigrationError, runMigrations} from '../../migrations/runner';
-import {Database} from '../../src/infrastructure/database';
+import {Database} from '../../src/infrastructures/database';
 import {testEnvironment} from '../support/database';
 
 function migration(version: string, body: () => Promise<void> | void) {
@@ -47,7 +47,7 @@ test('E03-U01: checksum mismatch and failure prevent subsequent migrations', asy
 });
 
 test('E03-U01: Database connects without schema synchronization and guards reject unsafe test targets before a connection', () => {
-    const source = readFileSync('src/infrastructure/database.ts', 'utf8');
+    const source = readFileSync('src/infrastructures/database.ts', 'utf8');
     assert.doesNotMatch(source, /\.sync\s*\(/);
     assert.ok(new Database({host: '127.0.0.1', name: 'blog_test_unit', username: 'app', password: 'fixture', port: 5432,
         dialect: 'postgres', poolMax: 1, acquireMs: 50, statementTimeoutMs: 50}).getSequelize());

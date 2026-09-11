@@ -1,6 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import type {NextFunction, Request, Response} from 'express';
-import {RequestContext} from '../infrastructure/logging/request-context';
+import {RequestContext} from '../infrastructures/logging/request-context';
 
 export function readCorrelationId(value: unknown): string | undefined {
     return typeof value === 'string' && /^[A-Za-z0-9._-]{1,128}$/.test(value) ? value : undefined;

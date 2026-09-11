@@ -3,7 +3,8 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {Sequelize} from 'sequelize';
 import {loadConfig, loadEnvironment, type Config} from '../src/config/env';
-import {migrationStatus, runMigrations, type Migration} from '../migrations/runner';
+import type {Migration} from '../migrations/runner';
+import {MigrationService} from '../src/infrastructures/persistence/ORM/migrations/migrationService';
 
 function migrationConfig(config: Config, env: NodeJS.ProcessEnv): Config['database'] {
     const required = ['MIGRATOR_DB_HOST', 'MIGRATOR_DB_NAME', 'MIGRATOR_DB_USERNAME', 'MIGRATOR_DB_PASSWORD'] as const;
@@ -39,12 +40,13 @@ export async function execute(argv: readonly string[] = process.argv.slice(2), e
     });
     try {
         await sequelize.authenticate();
+        const migrations = new MigrationService(sequelize);
         if (command === 'status') {
-            for (const [version, checksum] of await migrationStatus(sequelize)) process.stdout.write(`${version} ${checksum}\n`);
+            for (const [version, checksum] of await migrations.status()) process.stdout.write(`${version} ${checksum}\n`);
             return;
         }
         const directory = path.join(__dirname, '../migrations');
-        const applied = await runMigrations(sequelize, await discover(directory));
+        const applied = await migrations.up(await discover(directory));
         process.stdout.write(applied.length ? `Applied: ${applied.join(', ')}\n` : 'No pending migrations.\n');
     } finally { await sequelize.close(); }
 }

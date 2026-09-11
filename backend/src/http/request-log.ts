@@ -1,7 +1,7 @@
 import type {RequestHandler} from 'express';
-import type {ILogger} from '../infrastructure/logging/logger.interface';
-import {LoggerContext} from '../infrastructure/logging/logger.context';
-import {RequestContext, RequestLogContext} from '../infrastructure/logging/request-context';
+import type {ILogger} from '../infrastructures/logging/logger.interface';
+import {LoggerContext} from '../infrastructures/logging/logger.context';
+import {RequestContext, RequestLogContext} from '../infrastructures/logging/request-context';
 
 export function safelyLog(write: () => Promise<void>): void {
     try {

@@ -7,7 +7,7 @@ import request from 'supertest';
 import {createApp} from '../../src/http/app';
 import {HealthRoutes} from '../../src/http/health.routes';
 import {loadConfig} from '../../src/config/env';
-import {Database} from '../../src/infrastructure/database';
+import {Database} from '../../src/infrastructures/database';
 import {captureLogger, httpFixture, localEnv, testConfig} from '../helpers/http';
 import {backendRoot} from '../helpers/tooling';
 

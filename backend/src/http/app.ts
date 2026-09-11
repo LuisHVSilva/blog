@@ -2,7 +2,7 @@ import express, {type ErrorRequestHandler, Express, type RequestHandler} from 'e
 import cors from 'cors';
 import helmet from 'helmet';
 import type {Config} from '../config/env';
-import type {ILogger} from '../infrastructure/logging/logger.interface';
+import type {ILogger} from '../infrastructures/logging/logger.interface';
 import {createCorsOptions} from './cors';
 import {HttpBoundaryError} from './http-error';
 import {requestContextMiddleware} from './request-context';

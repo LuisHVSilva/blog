@@ -2,8 +2,8 @@ import {createServer} from 'node:http';
 import {ConnectionAcquireTimeoutError, ConnectionError} from 'sequelize';
 import {type Config, loadConfig, loadEnvironment} from './config/env';
 import {createComposition} from './composition';
-import {installProcessHandlers} from './infrastructure/process-handlers';
-import {LoggerContext} from './infrastructure/logging/logger.context';
+import {installProcessHandlers} from './infrastructures/process-handlers';
+import {LoggerContext} from './infrastructures/logging/logger.context';
 import {safelyLog} from './http/request-log';
 import {ConfigurationError} from "./shared/errors/configuration.error";
 

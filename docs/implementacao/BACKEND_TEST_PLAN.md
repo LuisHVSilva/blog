@@ -174,7 +174,7 @@ Unitários: [E01-U01](#e01-u01), [E01-U02](#e01-u02). Integração: [E01-I01](#e
 [↑ Voltar ao índice](#%C3%ADndice) · [Ordem E02](./BACKEND_IMPLEMENTATION_ORDER.md#02-separar-composi%C3%A7%C3%A3o-http-configura%C3%A7%C3%A3o-e-ciclo-de-vida) · [Implementação E02](./BACKEND_IMPLEMENTATION_PLAN.md#e02-separar-composi%C3%A7%C3%A3o-http-configura%C3%A7%C3%A3o-e-ciclo-de-vida) · [Estrutura](./BACKEND_IMPLEMENTATION_STRUCTURE.md#%C3%ADndice) · [Regras](./BACKEND_BUSINESS_RULES.md#%C3%ADndice)
 <!-- navigation:section:end -->
 
-**Componente testado:** `backend/src/main.ts`, `backend/src/composition.ts`, `backend/src/config/env.ts`, `backend/src/http/app.ts`, `backend/src/http/health.routes.ts`, `backend/src/http/cors.ts`, `backend/src/http/request-context.ts`, `backend/src/http/request-log.ts`, `backend/src/http/error-handler.ts`, `backend/src/http/error-status.ts`, `backend/src/shared/errors/application.error.ts`, `backend/src/infrastructure/logger.ts`, `backend/src/infrastructure/logging/formatter.ts`, `backend/src/infrastructure/logging/redact-sensitive.ts`, `backend/src/infrastructure/logging/request-context.ts`, `backend/src/infrastructure/logging/logger.interface.ts`, `backend/src/infrastructure/logging/logger.context.ts`, `backend/src/infrastructure/process-handlers.ts`.
+**Componente testado:** `backend/src/main.ts`, `backend/src/composition.ts`, `backend/src/config/env.ts`, `backend/src/http/app.ts`, `backend/src/http/health.routes.ts`, `backend/src/http/cors.ts`, `backend/src/http/request-context.ts`, `backend/src/http/request-log.ts`, `backend/src/http/error-handler.ts`, `backend/src/http/error-status.ts`, `backend/src/shared/errors/application.error.ts`, `backend/src/infrastructures/logger.ts`, `backend/src/infrastructures/logging/formatter.ts`, `backend/src/infrastructures/logging/redact-sensitive.ts`, `backend/src/infrastructures/logging/request-context.ts`, `backend/src/infrastructures/logging/logger.interface.ts`, `backend/src/infrastructures/logging/logger.context.ts`, `backend/src/infrastructures/process-handlers.ts`.
 
 **Objetivo:** Evoluir os componentes existentes para a árvore definida, montar app testável sem abrir porta e tornar falhas/encerramento previsíveis.
 
@@ -256,7 +256,7 @@ Unitários: [E02-U01](#e02-u01), [E02-U02](#e02-u02), [E02-U03](#e02-u03). Integ
 [↑ Voltar ao índice](#%C3%ADndice) · [Ordem E03](./BACKEND_IMPLEMENTATION_ORDER.md#03-conex%C3%A3o-postgresql-e-executor-de-migrations) · [Implementação E03](./BACKEND_IMPLEMENTATION_PLAN.md#e03-conex%C3%A3o-postgresql-e-executor-de-migrations) · [Estrutura](./BACKEND_IMPLEMENTATION_STRUCTURE.md#%C3%ADndice) · [Regras](./BACKEND_BUSINESS_RULES.md#%C3%ADndice)
 <!-- navigation:section:end -->
 
-**Componente testado:** `backend/src/infrastructure/database.ts`, `backend/scripts/migrate.ts`, `backend/migrations/runner.ts`, `backend/tests/support/database.ts`, `backend/tests/support/app.ts`.
+**Componente testado:** `backend/src/infrastructures/database.ts`, `backend/scripts/migrate.ts`, `backend/migrations/runner.ts`, `backend/tests/support/database.ts`, `backend/tests/support/app.ts`.
 
 **Objetivo:** Preservar a conexão funcional e acrescentar schema versionado, privilégios separados e ambiente real de testes.
 
@@ -386,7 +386,7 @@ Unitários: [E04-U01](#e04-u01), [E04-U02](#e04-u02), [E04-U03](#e04-u03). Integ
 [↑ Voltar ao índice](#%C3%ADndice) · [Ordem E05](./BACKEND_IMPLEMENTATION_ORDER.md#05-criar-schema-editorial-constraints-e-namespace-de-slugs) · [Implementação E05](./BACKEND_IMPLEMENTATION_PLAN.md#e05-criar-schema-editorial-constraints-e-namespace-de-slugs) · [Estrutura](./BACKEND_IMPLEMENTATION_STRUCTURE.md#%C3%ADndice) · [Regras](./BACKEND_BUSINESS_RULES.md#%C3%ADndice)
 <!-- navigation:section:end -->
 
-**Componente testado:** `backend/migrations/001-editorial.ts`, `backend/migrations/002-editorial-paths.ts`, `backend/src/modules/publishing/adapters/postgres/models.ts`, `backend/src/composition.ts`, `backend/src/infrastructure/database.ts`.
+**Componente testado:** `backend/migrations/001-editorial.ts`, `backend/migrations/002-editorial-paths.ts`, `backend/src/modules/publishing/adapters/postgres/models.ts`, `backend/src/composition.ts`, `backend/src/infrastructures/database.ts`.
 
 **Objetivo:** Persistir o catálogo multilíngue e impedir corridas que validação em memória não resolve.
 
@@ -1091,7 +1091,7 @@ Unitários: [E14-U01](#e14-u01), [E14-U02](#e14-u02). Integração: [E14-I01](#e
 [↑ Voltar ao índice](#%C3%ADndice) · [Ordem E15](./BACKEND_IMPLEMENTATION_ORDER.md#15-aplicar-permiss%C3%B5es-bloqueio-e-limites-de-abuso) · [Implementação E15](./BACKEND_IMPLEMENTATION_PLAN.md#e15-aplicar-permiss%C3%B5es-bloqueio-e-limites-de-abuso) · [Estrutura](./BACKEND_IMPLEMENTATION_STRUCTURE.md#%C3%ADndice) · [Regras](./BACKEND_BUSINESS_RULES.md#%C3%ADndice)
 <!-- navigation:section:end -->
 
-**Componente testado:** `backend/src/modules/identity/domain/authorization.ts`, `backend/src/modules/identity/application/manage-user.ts`, `backend/src/modules/identity/adapters/cli/manage-user.ts`, `backend/src/modules/identity/adapters/postgres/identity-store.ts`, `backend/migrations/004-security-controls.ts`, `backend/src/http/rate-limit.ts`, `backend/src/infrastructure/rate-limiter.ts`, `backend/src/composition.ts`, `backend/src/config/env.ts`.
+**Componente testado:** `backend/src/modules/identity/domain/authorization.ts`, `backend/src/modules/identity/application/manage-user.ts`, `backend/src/modules/identity/adapters/cli/manage-user.ts`, `backend/src/modules/identity/adapters/postgres/identity-store.ts`, `backend/migrations/004-security-controls.ts`, `backend/src/http/rate-limit.ts`, `backend/src/infrastructures/rate-limiter.ts`, `backend/src/composition.ts`, `backend/src/config/env.ts`.
 
 **Objetivo:** Definir proteção reutilizável para cada capacidade comunitária e operações administrativas protegidas.
 
@@ -1469,7 +1469,7 @@ Unitários: [E19-U01](#e19-u01), [E19-U02](#e19-u02). Integração: [E19-I01](#e
 [↑ Voltar ao índice](#%C3%ADndice) · [Ordem E20](./BACKEND_IMPLEMENTATION_ORDER.md#20-habilitar-comunidade-com-observabilidade-e-opera%C3%A7%C3%A3o-completas) · [Implementação E20](./BACKEND_IMPLEMENTATION_PLAN.md#e20-habilitar-comunidade-com-observabilidade-e-opera%C3%A7%C3%A3o-completas) · [Estrutura](./BACKEND_IMPLEMENTATION_STRUCTURE.md#%C3%ADndice) · [Regras](./BACKEND_BUSINESS_RULES.md#%C3%ADndice)
 <!-- navigation:section:end -->
 
-**Componente testado:** `backend/src/infrastructure/metrics.ts`, `backend/src/http/request-log.ts`, `backend/src/http/app.ts`, `backend/scripts/community-smoke.mjs`, `frontend/src/features/articles/community.tsx`.
+**Componente testado:** `backend/src/infrastructures/metrics.ts`, `backend/src/http/request-log.ts`, `backend/src/http/app.ts`, `backend/scripts/community-smoke.mjs`, `frontend/src/features/articles/community.tsx`.
 
 **Objetivo:** Validar comunidade inteira e acrescentar métricas úteis, documentação operacional e ferramentas de contribuição.
 
@@ -1885,7 +1885,7 @@ Unitários: [E25-U01](#e25-u01). Integração: [E25-I01](#e25-i01), [E25-I02](#e
 [↑ Voltar ao índice](#%C3%ADndice) · [Ordem E26](./BACKEND_IMPLEMENTATION_ORDER.md#26-escalar-apenas-o-gargalo-medido) · [Implementação E26](./BACKEND_IMPLEMENTATION_PLAN.md#e26-escalar-apenas-o-gargalo-medido) · [Estrutura](./BACKEND_IMPLEMENTATION_STRUCTURE.md#%C3%ADndice) · [Regras](./BACKEND_BUSINESS_RULES.md#%C3%ADndice)
 <!-- navigation:section:end -->
 
-**Componente testado:** `backend/scripts/load-test.mjs`, `backend/src/infrastructure/public-cache-store.ts`, `backend/src/infrastructure/rate-limiter.ts`, `backend/src/modules/community/adapters/postgres/view-recorder.ts`, `backend/src/modules/community/adapters/postgres/stats-reader.ts`, `backend/scripts/reconcile-stats.ts`, `backend/src/workers/blog-worker.ts`, `backend/src/infrastructure/tracing.ts`, `backend/src/modules/publishing/application/ports/editorial-asset-store.ts`, `backend/src/modules/publishing/adapters/storage/editorial-asset-store.ts`, `backend/src/infrastructure/database.ts`, `backend/src/composition.ts`, `backend/migrations/014-measured-optimizations.ts`, `backend/src/config/env.ts`.
+**Componente testado:** `backend/scripts/load-test.mjs`, `backend/src/infrastructures/public-cache-store.ts`, `backend/src/infrastructures/rate-limiter.ts`, `backend/src/modules/community/adapters/postgres/view-recorder.ts`, `backend/src/modules/community/adapters/postgres/stats-reader.ts`, `backend/scripts/reconcile-stats.ts`, `backend/src/workers/blog-worker.ts`, `backend/src/infrastructures/tracing.ts`, `backend/src/modules/publishing/application/ports/editorial-asset-store.ts`, `backend/src/modules/publishing/adapters/storage/editorial-asset-store.ts`, `backend/src/infrastructures/database.ts`, `backend/src/composition.ts`, `backend/migrations/014-measured-optimizations.ts`, `backend/src/config/env.ts`.
 
 **Objetivo:** Executar uma otimização por vez, preservando contratos, consistência e operação do monólito.
 

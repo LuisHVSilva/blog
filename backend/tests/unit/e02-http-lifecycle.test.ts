@@ -9,11 +9,11 @@ import {createApp} from '../../src/http/app';
 import {createErrorHandler} from '../../src/http/error-handler';
 import {mapApplicationErrorStatus} from '../../src/http/error-status';
 import {readCorrelationId} from '../../src/http/request-context';
-import {RequestContext} from '../../src/infrastructure/logging/request-context';
+import {RequestContext} from '../../src/infrastructures/logging/request-context';
 import type {ApplicationErrorKind} from '../../src/shared/errors/application.error';
 import {localEnv, testConfig, captureLogger} from '../helpers/http';
 import {temporaryDirectory} from '../helpers/tooling';
-import {installProcessHandlers} from '../../src/infrastructure/process-handlers';
+import {installProcessHandlers} from '../../src/infrastructures/process-handlers';
 
 test('E02-U01: invalid config fails with paths only; valid config normalizes and freezes nested values', () => {
     for (const patch of [

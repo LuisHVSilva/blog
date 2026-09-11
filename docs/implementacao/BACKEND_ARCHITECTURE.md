@@ -108,7 +108,7 @@ backend/
           postgres/article-reader.ts
       identity/                   P1: domínio/aplicação/adapters da identidade
       community/                  P1: comentários, likes e métricas públicas
-    infrastructure/
+    infrastructures/
       database.ts                 pool/Sequelize e encerramento
       logger.ts                   JSON para stdout
   migrations/

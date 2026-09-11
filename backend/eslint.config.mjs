@@ -31,7 +31,11 @@ const boundaries = {
                     const ownDomain = layer?.[1] === source[1] && layer[2] === 'domain';
                     const application = source[2] === 'application' && layer?.[2] === 'application'
                         && (layer[1] === source[1] || /^src\/modules\/[^/]+\/application\/ports\//.test(target));
-                    forbidden ||= !(sharedDomain || shared || ownDomain || application);
+                    const useCaseContract = source[2] === 'application' && /^src\/shared\/interfaces\/useCase\.interface(?:\.js|\.ts)?$/.test(target);
+                    forbidden ||= !(sharedDomain || shared || ownDomain || application || useCaseContract);
+                    if (/\/application\/useCases\//.test(normalized(filename))) {
+                        forbidden ||= /\/(repositories|ports)\//.test(target);
+                    }
                 }
             } else if (source?.[2] === 'adapters' && dependency.startsWith('.')) {
                 const target = normalized(resolve(dirname(filename), dependency));
@@ -57,6 +61,17 @@ const boundaries = {
 };
 
 export default [
+    {
+        files: ['src/modules/*/application/useCases/**/*.ts', 'src/modules/*/domain/services/**/*.ts', 'src/modules/*/domain/entities/**/*.ts'],
+        rules: {
+            'no-restricted-syntax': ['error',
+                {selector: 'Program > FunctionDeclaration', message: 'Use classes with constructor injection and methods.'},
+                {selector: 'ExportNamedDeclaration > FunctionDeclaration', message: 'Use classes with constructor injection and methods.'},
+                {selector: 'VariableDeclarator[init.type="ArrowFunctionExpression"]', message: 'Use class methods, not function-valued variables.'},
+                {selector: 'VariableDeclarator[init.type="FunctionExpression"]', message: 'Use class methods, not function-valued variables.'},
+            ],
+        },
+    },
     {ignores: ['node_modules/**', 'dist/**', 'tmp/**', 'out-tsc/**', 'LOGS/**']},
     {
         files: ['**/*.{ts,js,mjs,cjs}'],
