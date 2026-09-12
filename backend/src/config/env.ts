@@ -1,7 +1,4 @@
-import dotenv from 'dotenv';
-import {existsSync} from 'node:fs';
 import {isIP} from 'node:net';
-import path from 'node:path';
 import {z, ZodString} from 'zod';
 import {ConfigurationError} from "../shared/errors/configuration.error";
 
@@ -34,6 +31,12 @@ function httpUrl(value: string): URL {
     return url;
 }
 
+/**
+ * Validates environment variables and converts them into the immutable runtime configuration.
+ *
+ * @param env - Environment values to validate, normally loaded by `loadEnvironment`.
+ * @throws {ConfigurationError} When a required value is absent or does not meet the deployment constraints.
+ */
 export function loadConfig(env: NodeJS.ProcessEnv) {
     const parsed = schema.safeParse(env);
 
@@ -46,8 +49,11 @@ export function loadConfig(env: NodeJS.ProcessEnv) {
 
     try {
         site = httpUrl(value.PUBLIC_SITE_URL);
-        if (site.pathname !== '/' || (value.NODE_ENV === 'production' && site.protocol !== 'https:')) throw new Error();
     } catch {
+        throw new ConfigurationError(['PUBLIC_SITE_URL']);
+    }
+
+    if (site.pathname !== '/' || (value.NODE_ENV === 'production' && site.protocol !== 'https:')) {
         throw new ConfigurationError(['PUBLIC_SITE_URL']);
     }
 
@@ -55,8 +61,12 @@ export function loadConfig(env: NodeJS.ProcessEnv) {
 
     try {
         origins = [...new Set(value.CORS_ORIGINS.split(',').map((item) => item.trim()).filter(Boolean).map((item) => {
-            const url = httpUrl(item);
-            if (url.pathname !== '/') throw new Error();
+            const url: URL = httpUrl(item);
+
+            if (url.pathname !== '/') {
+                throw new Error();
+            }
+
             return url.origin;
         }))];
     } catch {
@@ -86,31 +96,7 @@ export function loadConfig(env: NodeJS.ProcessEnv) {
     });
 }
 
+/** Immutable configuration consumed by application composition and operational CLIs. */
 export type Config = ReturnType<typeof loadConfig>;
 
-export function findProjectRoot(startDirectory: string): string {
-    let directory: string = startDirectory;
-
-    while (!existsSync(path.join(directory, 'package.json'))) {
-        const parent: string = path.dirname(directory);
-        if (parent === directory) throw new Error('Could not locate the project root.');
-        directory = parent;
-    }
-
-    return directory;
-}
-
-export function loadEnvironment(env: NodeJS.ProcessEnv = process.env, directory?: string): NodeJS.ProcessEnv {
-    const result = {...env};
-    const mode: string = result.NODE_ENV ?? 'dev';
-
-    if (mode === 'dev' || mode === 'test') {
-        dotenv.config({
-            path: path.join(directory ?? findProjectRoot(__dirname), `.env.${mode}`),
-            processEnv: result,
-            quiet: true
-        });
-    }
-
-    return result;
-}
+export {findProjectRoot, loadEnvironment} from './environment';

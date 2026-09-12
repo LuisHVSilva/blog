@@ -1,5 +1,6 @@
-import type {Difficulty, Locale, TranslationStatus} from './article';
+import type {Difficulty, Locale, TranslationStatus} from './publishing.types';
 
+/** Declarative catalog that accompanies Markdown translations in an editorial edition. */
 export type EditorialCatalog = Readonly<{
     schemaVersion: 1;
     authors: readonly Readonly<{

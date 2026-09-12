@@ -1,3 +1,4 @@
+import {createReadiness} from '../../src/infrastructures/readiness';
 import {PublishingQueriesComposition} from '../../src/infrastructures/di/publishingQueries.composition';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -13,7 +14,9 @@ import {PersistenceContext} from '../../src/infrastructures/persistence/ORM/cont
 import {UnitOfWork} from '../../src/infrastructures/persistence/ORM/unitOfWork/unitOfWork';
 import {ReadSnapshotUnitOfWork} from '../../src/infrastructures/persistence/ORM/unitOfWork/readSnapshotUnitOfWork';
 import {PublicationRevisionPersistence} from '../../src/infrastructures/persistence/adapters/publicationRevision.persistence';
-import {Article, ArticleTranslation, type Difficulty, type Locale} from '../../src/modules/publishing/domain/article';
+import {Article} from '../../src/modules/publishing/domain/article';
+import {ArticleTranslation} from '../../src/modules/publishing/domain/entities/articleTranslation';
+import {type Difficulty, type Locale} from '../../src/modules/publishing/domain/publishing.types';
 import {parseContentRoot} from '../../src/modules/publishing/adapters/cli/content-parser';
 import {ContentValidationService} from '../../src/modules/publishing/domain/services/contentValidation.service';
 import request from 'supertest';
@@ -24,10 +27,10 @@ import {migration as invariants} from '../../migrations/005-publication-invarian
 import {migration as metadata} from '../../migrations/006-editorial-metadata';
 import {migration as revisions} from '../../migrations/007-editorial-content-revisions';
 import {EditorialComposition} from '../../src/infrastructures/di/editorial.composition';
-import {ArticlesRouter} from '../../src/modules/publishing/adapters/http/articles.routes';
+import {PublishingHttpContainer} from '../../src/infrastructures/di/publishingHttp.container';
+import {buildArticlesRouter} from '../../src/modules/publishing/adapters/http/routes/articles.router';
 import {createApp} from '../../src/http/app';
-import {HealthRoutes} from '../../src/http/health.routes';
-import {captureLogger} from '../helpers/http';
+import {captureLogger} from '../helpers/logging';
 import type {EditionInput} from '../../src/modules/publishing/application/content.dto';
 import {appConfig, databaseFor, migratorConfig, testEnvironment} from '../support/database';
 
@@ -40,7 +43,8 @@ const store = EditorialComposition.create(appDb, 'https://example.test', {now: (
 const queries = PublishingQueriesComposition.create(appDb, 'https://example.test');
 const api = createApp({
     config: {trustProxy: [], corsOrigins: []}, logger: captureLogger().logger,
-    readiness: HealthRoutes.createReadiness(async () => true, () => false), routes: [new ArticlesRouter(PublishingQueriesComposition.create(appDb, 'https://example.test')).createRouter()]
+    readiness: createReadiness(async () => true, () => false),
+    routes: [buildArticlesRouter(new PublishingHttpContainer(PublishingQueriesComposition.create(appDb, 'https://example.test')))]
 });
 const articleId = randomUUID();
 const translationId = randomUUID();

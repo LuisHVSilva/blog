@@ -1,4 +1,12 @@
-import type {EditionInput, ImportResult, VisibilityInput, UnpublishInput, ArchiveInput, RestoreInput} from '../editorial.types';
+import type {
+    ArchiveInput,
+    EditionInput,
+    ImportResult,
+    RestoreInput,
+    UnpublishInput,
+    VisibilityInput
+} from '../editorial.types';
+
 export interface IPublicationService {
     applyEdition(input: EditionInput): Promise<ImportResult>;
     publish(input: VisibilityInput): Promise<ImportResult>;

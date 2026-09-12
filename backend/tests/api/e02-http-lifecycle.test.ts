@@ -3,7 +3,8 @@ import test from 'node:test';
 import request from 'supertest';
 import {ConnectionError} from 'sequelize';
 import {Router} from 'express';
-import {httpFixture, testConfig, captureLogger} from '../helpers/http';
+import {httpFixture, testConfig} from '../helpers/http';
+import {captureLogger} from '../helpers/logging';
 import {createApp} from '../../src/http/app';
 
 test('E02-A01: health responses are minimal, no-store and independent from private config', async () => {

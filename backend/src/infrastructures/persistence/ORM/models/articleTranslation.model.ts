@@ -1,8 +1,9 @@
-import {Table, DataType, BelongsTo, ForeignKey} from 'sequelize-typescript';
+import {BelongsTo, DataType, ForeignKey, Table} from 'sequelize-typescript';
 import type {InferAttributes, InferCreationAttributes, NonAttribute} from 'sequelize';
 import {BaseModel} from '../base/base.model';
 import {DbColumn} from '../decorators/dbColumn';
-import type {Locale, TranslationStatus, TranslationSeo} from '../../../../modules/publishing/domain/article';
+import type {Locale, TranslationStatus} from '../../../../modules/publishing/domain/publishing.types';
+import type {TranslationSeo} from '../../../../modules/publishing/domain/entities/articleTranslation';
 import {ArticleModel} from './article.model';
 
 @Table({tableName: 'article_translations', timestamps: false, freezeTableName: true})

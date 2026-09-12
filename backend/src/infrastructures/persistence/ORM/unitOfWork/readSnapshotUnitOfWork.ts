@@ -1,8 +1,15 @@
-import {Transaction, type Sequelize} from 'sequelize';
+import {type Sequelize, Transaction} from 'sequelize';
 import type {IEditorialUnitOfWork} from '../../../../modules/publishing/domain/services/editorialRuntime.interface';
 import type {IPersistenceContext} from '../context/persistenceContext.interface';
+
+/** Runs public snapshot reads under a repeatable-read, read-only transaction. */
 export class ReadSnapshotUnitOfWork implements IEditorialUnitOfWork {
-    constructor(private readonly database: Sequelize, private readonly context: IPersistenceContext) {}
+    constructor(
+        private readonly database: Sequelize,
+        private readonly context: IPersistenceContext
+    ) {
+    }
+
     async execute<T>(work: () => Promise<T>): Promise<T> {
         if (this.context.getTransaction()) return await work();
         return await this.database.transaction({isolationLevel: Transaction.ISOLATION_LEVELS.REPEATABLE_READ, readOnly: true}, async (transaction) => {

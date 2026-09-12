@@ -2,10 +2,11 @@ import {createHash} from 'node:crypto';
 import {parseContentRoot} from '../src/modules/publishing/adapters/cli/content-parser';
 import {ContentValidationService} from '../src/modules/publishing/domain/services/contentValidation.service';
 import {Database} from '../src/infrastructures/database';
-import {loadConfig, loadEnvironment} from '../src/config/env';
+import {loadConfig} from '../src/config/env';
+import {loadEnvironment} from '../src/config/environment';
 import {EditorialComposition} from '../src/infrastructures/di/editorial.composition';
 import {argument} from '../src/modules/publishing/adapters/cli/arguments';
-import type {Difficulty, Locale} from '../src/modules/publishing/domain/article';
+import type {Difficulty, Locale} from '../src/modules/publishing/domain/publishing.types';
 
 export class SeedLocalCli {
     static async execute(args = process.argv.slice(2), env = loadEnvironment()) {

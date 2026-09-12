@@ -1,3 +1,4 @@
+import {createReadiness} from '../../src/infrastructures/readiness';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {createServer} from 'node:net';
@@ -5,10 +6,10 @@ import {join} from 'node:path';
 import test, {type TestContext} from 'node:test';
 import request from 'supertest';
 import {createApp} from '../../src/http/app';
-import {HealthRoutes} from '../../src/http/health.routes';
 import {loadConfig} from '../../src/config/env';
 import {Database} from '../../src/infrastructures/database';
-import {captureLogger, httpFixture, localEnv, testConfig} from '../helpers/http';
+import {httpFixture, localEnv, testConfig} from '../helpers/http';
+import {captureLogger} from '../helpers/logging';
 import {backendRoot} from '../helpers/tooling';
 
 type Message = { event: string; port?: number; stopping?: boolean };
@@ -77,7 +78,7 @@ test('E02-I01: liveness ignores DB failure; readiness deadlines do not stack pro
         release = done;
     });
     const state = {stopping: false};
-    const readiness = HealthRoutes.createReadiness(() => {
+    const readiness = createReadiness(() => {
         calls++;
         return operation;
     }, () => state.stopping, 25);
@@ -93,7 +94,7 @@ test('E02-I01: liveness ignores DB failure; readiness deadlines do not stack pro
     state.stopping = true;
     await request(app).get('/health/ready').expect(503);
     const failing = createApp({
-        config: testConfig, logger, readiness: HealthRoutes.createReadiness(async () => {
+        config: testConfig, logger, readiness: createReadiness(async () => {
             throw new Error('private DB');
         }, () => false)
     });

@@ -6,7 +6,8 @@ import type {IEditorialArticleService} from './editorialArticle.service.interfac
 import type {IEditorialTranslationService} from './editorialTranslation.service.interface';
 import type {IArticleTagRepository} from '../repositories/articleTag.repository.interface';
 import type {EditorialCatalog} from '../editorial-catalog';
-import {Article, ArticleTranslation} from '../article';
+import {Article} from '../article';
+import {ArticleTranslation} from '../entities/articleTranslation';
 import {ArticleTag} from '../entities/articleTag';
 import {PublishingValidationError} from '../publishing.errors';
 

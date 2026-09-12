@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {Column} from 'sequelize-typescript';
-import type {ModelAttributeColumnOptions, DataType} from 'sequelize';
+import type {DataType, ModelAttributeColumnOptions} from 'sequelize';
 
 /** Explicit type avoids reliance on emitted design metadata (including tsx tests). */
 export class ColumnNaming {

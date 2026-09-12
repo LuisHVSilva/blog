@@ -14,4 +14,17 @@ import {PublicationEditionModel} from './models/publicationEdition.model';
 import {PublicationCurrentRevisionModel} from './models/publicationCurrentRevision.model';
 
 /** Single explicit registry, used with repositoryMode to isolate connections. */
-export const editorialModels: ModelCtor[] = [AuthorProfileModel, ArticleModel, ArticleTranslationModel, TagModel, TagTranslationModel, ArticleTagModel, SeriesModel, SeriesTranslationModel, SeriesArticleModel, ArticlePathModel, PublicationEditionModel, PublicationCurrentRevisionModel];
+export const editorialModels: ModelCtor[] = [
+    AuthorProfileModel,
+    ArticleModel,
+    ArticleTranslationModel,
+    TagModel,
+    TagTranslationModel,
+    ArticleTagModel,
+    SeriesModel,
+    SeriesTranslationModel,
+    SeriesArticleModel,
+    ArticlePathModel,
+    PublicationEditionModel,
+    PublicationCurrentRevisionModel
+];

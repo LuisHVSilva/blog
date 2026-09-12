@@ -1,7 +1,10 @@
-import type {Difficulty, Locale, TranslationSeo, TranslationStatus} from './article';
+import type {Difficulty, Locale, TranslationStatus} from './publishing.types';
+import type {TranslationSeo} from './entities/articleTranslation';
 import type {EditorialCatalog} from './editorial-catalog';
 
+/** Identifies the human or automation applying an editorial revision. */
 export type Operator = Readonly<{kind: 'operator'; id: string; sourceRevision: string; reason?: string}>;
+/** Full catalog replacement request, guarded by the revision known to the caller. */
 export type EditionInput = Readonly<{
     expectedRevision: string;
     dryRun: boolean;
@@ -29,6 +32,7 @@ export type EditionArticleInput = Readonly<{
     publishedAt?: string;
 }>;
 export type Change = Readonly<{kind: 'created' | 'updated' | 'unchanged' | 'published' | 'unpublished' | 'archived'; subject: string}>;
+/** Outcome shared by editorial import and visibility operations. */
 export type ImportResult = Readonly<{revision: string; changed: boolean; changes: readonly Change[]}>;
 
 

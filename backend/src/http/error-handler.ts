@@ -6,7 +6,7 @@ import {LoggerContext} from '../infrastructures/logging/logger.context';
 import {mapApplicationErrorStatus} from './error-status';
 import {getRequestId} from './request-context';
 import {HttpBoundaryError} from './http-error';
-import {safelyLog} from './request-log';
+import {safelyLog} from '../infrastructures/logging/safely-log';
 
 function mapError(err: unknown) {
     if (err instanceof HttpBoundaryError) {
@@ -47,6 +47,12 @@ function mapError(err: unknown) {
     return {status: 500, code: 'INTERNAL_ERROR', message: 'An unexpected error occurred.'};
 }
 
+/**
+ * Creates the final HTTP error boundary.
+ *
+ * It maps known application and transport failures to safe response envelopes while keeping
+ * implementation details exclusively in the structured log.
+ */
 export function createErrorHandler(logger: ILogger): ErrorRequestHandler {
     return (err: unknown, req, res, next) => {
         if (res.headersSent) {

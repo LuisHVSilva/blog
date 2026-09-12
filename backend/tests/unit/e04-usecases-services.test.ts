@@ -8,9 +8,16 @@ import {GetArticleUseCase} from '../../src/modules/publishing/application/useCas
 import {GetSeriesUseCase} from '../../src/modules/publishing/application/useCases/getSeries/getSeries.useCase';
 import {ListTagsUseCase} from '../../src/modules/publishing/application/useCases/listTags/listTags.useCase';
 import {ListSeriesUseCase} from '../../src/modules/publishing/application/useCases/listSeries/listSeries.useCase';
-import type {IPublicArticleRepository, PublicArticleLookup} from '../../src/modules/publishing/domain/repositories/publicArticle.repository.interface';
-import type {ArticleListQuery, ArticleSummary, SlugQuery} from '../../src/modules/publishing/domain/public-content.types';
-import type {Locale} from '../../src/modules/publishing/domain/article';
+import type {
+    IPublicArticleRepository,
+    PublicArticleLookup
+} from '../../src/modules/publishing/domain/repositories/publicArticle.repository.interface';
+import type {
+    ArticleListQuery,
+    ArticleSummary,
+    SlugQuery
+} from '../../src/modules/publishing/domain/public-content.types';
+import type {Locale} from '../../src/modules/publishing/domain/publishing.types';
 import {PublishedArticle} from '../../src/modules/publishing/domain/entities/publishedArticle';
 import {PublishedSeries} from '../../src/modules/publishing/domain/entities/publishedSeries';
 import {PublishedTag} from '../../src/modules/publishing/domain/entities/publishedTag';

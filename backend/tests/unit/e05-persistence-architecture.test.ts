@@ -10,7 +10,8 @@ import {ArticlePersistenceMapper} from '../../src/infrastructures/persistence/ma
 import {ArticleTranslationPersistenceMapper} from '../../src/infrastructures/persistence/mappers/articleTranslation.persistence.mapper';
 import {PersistenceContext} from '../../src/infrastructures/persistence/ORM/context/persistenceContext';
 import {ArticlePersistence} from '../../src/infrastructures/persistence/adapters/article.persistence';
-import {Article, ArticleTranslation} from '../../src/modules/publishing/domain/article';
+import {Article} from '../../src/modules/publishing/domain/article';
+import {ArticleTranslation} from '../../src/modules/publishing/domain/entities/articleTranslation';
 
 const date = new Date('2026-09-09T12:00:00Z');
 const id = '123e4567-e89b-42d3-a456-426614174000';

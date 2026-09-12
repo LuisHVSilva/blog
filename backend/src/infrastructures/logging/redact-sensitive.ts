@@ -14,9 +14,18 @@ function redactString(value: string): string {
 
 /** Additional defense for known credential patterns; log only explicitly allowed data. */
 export function redactSensitive(value: unknown, seen = new WeakSet<object>()): unknown {
-    if (typeof value === 'string') return redactString(value);
-    if (value === null || value === undefined || typeof value !== 'object') return value;
-    if (seen.has(value)) return '[Circular]';
+    if (typeof value === 'string') {
+        return redactString(value);
+    }
+
+    if (value === null || value === undefined || typeof value !== 'object') {
+        return value;
+    }
+
+    if (seen.has(value)) {
+        return '[Circular]';
+    }
+
     seen.add(value);
 
     if (value instanceof Error) {
@@ -26,8 +35,14 @@ export function redactSensitive(value: unknown, seen = new WeakSet<object>()): u
             stack: value.stack ? redactString(value.stack) : undefined,
         };
     }
-    if (value instanceof Date) return value.toISOString();
-    if (Array.isArray(value)) return value.map((item) => redactSensitive(item, seen));
+
+    if (value instanceof Date) {
+        return value.toISOString();
+    }
+
+    if (Array.isArray(value)) {
+        return value.map((item) => redactSensitive(item, seen));
+    }
 
     const output: Record<string, unknown> = {};
     for (const [key, child] of Object.entries(value)) {

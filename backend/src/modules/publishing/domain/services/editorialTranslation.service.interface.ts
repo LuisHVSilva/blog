@@ -1,4 +1,6 @@
-import type {ArticleTranslation, Locale} from '../article';
+import type {ArticleTranslation} from '../entities/articleTranslation';
+import type {Locale} from '../publishing.types';
+
 export interface IEditorialTranslationService {
     findById(id: string): Promise<ArticleTranslation | null>;
     save(entity: ArticleTranslation): Promise<ArticleTranslation>;

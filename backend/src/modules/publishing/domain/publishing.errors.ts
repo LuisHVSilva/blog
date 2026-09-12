@@ -11,9 +11,3 @@ export class PublishingConflictError extends ApplicationError {
     readonly kind = 'conflict' as const;
     constructor(message: string) { super(message); }
 }
-
-export class PublishingNotFoundError extends ApplicationError {
-    readonly code = 'PUBLISHING_NOT_FOUND';
-    readonly kind = 'not-found' as const;
-    constructor(message: string) { super(message); }
-}

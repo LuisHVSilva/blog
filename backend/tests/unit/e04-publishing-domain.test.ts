@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {Article, ArticleTranslation, type ArticleTranslationProps} from '../../src/modules/publishing/domain/article';
+import {Article} from '../../src/modules/publishing/domain/article';
+import {ArticleTranslation, type ArticleTranslationProps} from '../../src/modules/publishing/domain/entities/articleTranslation';
 import {ReadingTime} from '../../src/modules/publishing/domain/reading-time';
 import {PublicationPolicy} from '../../src/modules/publishing/domain/publication-policy';
 import {Series, type SeriesMember} from '../../src/modules/publishing/domain/series';

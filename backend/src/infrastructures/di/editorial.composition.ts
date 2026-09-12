@@ -57,7 +57,17 @@ import {
     GetEditorialRevisionUseCase
 } from '../../modules/publishing/application/useCases/getEditorialRevision/getEditorialRevision.useCase';
 
+/**
+ * Composes the write-side editorial use cases with persistence-backed domain services.
+ */
 export class EditorialComposition {
+    /**
+     * Creates a self-contained editorial command graph for a database connection.
+     *
+     * @param database - Sequelize connection used by repositories and transaction scopes.
+     * @param siteOrigin - Canonical public-site origin used while producing content URLs.
+     * @param clock - Clock injected by tests or operations that require deterministic audit dates.
+     */
     static create(database: Sequelize, siteOrigin: string, clock: IEditorialClock = new EditorialClock()) {
         const context = new PersistenceContext();
         const article = new EditorialArticleService(new ArticlePersistence(database, context));

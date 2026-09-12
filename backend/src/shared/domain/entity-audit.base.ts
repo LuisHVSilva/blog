@@ -1,6 +1,6 @@
 import {EntityBase} from './entity.base';
 
-export type AuditProps = Readonly<{createdAt?: Date; updatedAt?: Date; createdBy?: string; updatedBy?: string}>;
+export type AuditProps = Readonly<{ createdAt?: Date; updatedAt?: Date; }>;
 
 /** Audit values are supplied explicitly; there is no ambient clock or actor. */
 export abstract class EntityAuditBase<T extends {readonly id: string} & AuditProps, TEntity> extends EntityBase<T, TEntity> {
@@ -12,6 +12,4 @@ export abstract class EntityAuditBase<T extends {readonly id: string} & AuditPro
     }
     get createdAt(): T['createdAt'] { return this.read('createdAt'); }
     get updatedAt(): T['updatedAt'] { return this.read('updatedAt'); }
-    get createdBy(): T['createdBy'] { return this.read('createdBy'); }
-    get updatedBy(): T['updatedBy'] { return this.read('updatedBy'); }
 }

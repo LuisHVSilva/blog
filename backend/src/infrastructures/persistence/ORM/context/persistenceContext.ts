@@ -5,19 +5,35 @@ import type {IPersistenceContext} from './persistenceContext.interface';
 /** An instance belongs to one persistence composition, not to a global container. */
 export class PersistenceContext implements IPersistenceContext {
     private readonly storage = new AsyncLocalStorage<{transaction: Transaction; rollbackOnly: boolean}>();
-    getTransaction(): Transaction | undefined { return this.storage.getStore()?.transaction; }
+
+    /** Returns the transaction bound to the current asynchronous editorial operation. */
+    getTransaction(): Transaction | undefined {
+        return this.storage.getStore()?.transaction;
+    }
+
     requireTransaction(): Transaction {
         const transaction = this.getTransaction();
-        if (!transaction) throw new Error('Editorial writes require a unit of work.');
+        if (!transaction) {
+            throw new Error('Editorial writes require a unit of work.');
+        }
+
         return transaction;
     }
+
+    /** Binds transaction state to asynchronous descendants of a unit of work. */
     run<T>(transaction: Transaction, work: () => Promise<T>): Promise<T> {
         return this.storage.run({transaction, rollbackOnly: false}, work);
     }
+
     markRollbackOnly(): void {
         const state = this.storage.getStore();
-        if (!state) throw new Error('Editorial writes require a unit of work.');
+        if (!state) {
+            throw new Error('Editorial writes require a unit of work.');
+        }
         state.rollbackOnly = true;
     }
-    isRollbackOnly(): boolean { return this.storage.getStore()?.rollbackOnly ?? false; }
+
+    isRollbackOnly(): boolean {
+        return this.storage.getStore()?.rollbackOnly ?? false;
+    }
 }

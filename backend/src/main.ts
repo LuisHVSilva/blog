@@ -1,10 +1,11 @@
 import {createServer} from 'node:http';
 import {ConnectionAcquireTimeoutError, ConnectionError} from 'sequelize';
-import {type Config, loadConfig, loadEnvironment} from './config/env';
+import {type Config, loadConfig} from './config/env';
+import {loadEnvironment} from './config/environment';
 import {createComposition} from './composition';
 import {installProcessHandlers} from './infrastructures/process-handlers';
 import {LoggerContext} from './infrastructures/logging/logger.context';
-import {safelyLog} from './http/request-log';
+import {safelyLog} from './infrastructures/logging/safely-log';
 import {ConfigurationError} from "./shared/errors/configuration.error";
 
 export async function startApplication(config: Config, components = createComposition(config), timeoutMs = 10_000) {

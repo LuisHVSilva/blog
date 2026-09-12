@@ -1,3 +1,6 @@
-import type {Locale} from '../article';
+import type {Locale} from '../publishing.types';
 import type {PublishedTag} from '../entities/publishedTag';
-export interface IPublicTagRepository { list(locale: Locale): Promise<readonly PublishedTag[]>; }
+
+export interface IPublicTagRepository {
+    list(locale: Locale): Promise<readonly PublishedTag[]>;
+}

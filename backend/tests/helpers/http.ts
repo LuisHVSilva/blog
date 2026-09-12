@@ -1,9 +1,9 @@
+import {captureLogger} from './logging';
+import {createReadiness} from '../../src/infrastructures/readiness';
 import {Router} from 'express';
 import {loadConfig} from '../../src/config/env';
-import {createApp, jsonMutation} from '../../src/http/app';
-import {HealthRoutes} from '../../src/http/health.routes';
-import {LogFormatter} from '../../src/infrastructures/logging/formatter';
-import type {ILogger} from '../../src/infrastructures/logging/logger.interface';
+import {createApp} from '../../src/http/app';
+import {jsonMutation} from '../../src/http/json-mutation';
 import {ApplicationError, type ApplicationErrorKind} from '../../src/shared/errors/application.error';
 
 export const localEnv = {
@@ -20,26 +20,6 @@ export const localEnv = {
     SYNC: 'false',
 };
 export const testConfig = loadConfig(localEnv);
-
-export function captureLogger() {
-    const records: Record<string, unknown>[] = [];
-    const formatter = new LogFormatter();
-    const logger: ILogger = {
-        async logInfo(context, message, status, info) {
-            records.push(JSON.parse(formatter.format('INFO', context.className, context.method, message, status, info)));
-        },
-        async logWarn(context, message, status, info) {
-            records.push(JSON.parse(formatter.format('WARN', context.className, context.method, message, status, info)));
-        },
-        async logError(context, message, _stack, info, status) {
-            records.push(JSON.parse(formatter.format('ERROR', context.className, context.method, message, status, info)));
-        },
-        async logException(context, error, info, status) {
-            records.push(JSON.parse(formatter.format('ERROR', context.className, context.method, error.message, status, info)));
-        },
-    };
-    return {logger, records};
-}
 
 export class FixtureError extends ApplicationError {
     readonly code = 'FIXTURE_ERROR';
@@ -62,7 +42,7 @@ export function httpFixture() {
     router.get('/unknown', () => {
         throw new Error('private SQL and password=unstructured-secret');
     });
-    const readiness = HealthRoutes.createReadiness(async () => undefined, () => state.stopping);
+    const readiness = createReadiness(async () => undefined, () => state.stopping);
     const app = createApp({config: testConfig, logger: capture.logger, readiness, routes: [router]});
     return {app, state, readiness, ...capture};
 }

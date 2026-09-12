@@ -1,5 +1,6 @@
 import {EntityBase} from '../../../shared/domain/entity.base';
-import {EditorialRules, type Locale} from './article';
+import {EditorialRules} from './editorial-rules';
+import {type Locale} from './publishing.types';
 import {ApplicationError} from '../../../shared/errors/application.error';
 
 export type SeriesMember = Readonly<{

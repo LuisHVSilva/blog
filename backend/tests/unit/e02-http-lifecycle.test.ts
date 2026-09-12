@@ -4,14 +4,16 @@ import {join} from 'node:path';
 import test from 'node:test';
 import {Router, type Request, type Response} from 'express';
 import request from 'supertest';
-import {loadConfig, loadEnvironment, findProjectRoot} from '../../src/config/env';
+import {loadConfig} from '../../src/config/env';
+import {loadEnvironment, findProjectRoot} from '../../src/config/environment';
 import {createApp} from '../../src/http/app';
 import {createErrorHandler} from '../../src/http/error-handler';
 import {mapApplicationErrorStatus} from '../../src/http/error-status';
 import {readCorrelationId} from '../../src/http/request-context';
 import {RequestContext} from '../../src/infrastructures/logging/request-context';
 import type {ApplicationErrorKind} from '../../src/shared/errors/application.error';
-import {localEnv, testConfig, captureLogger} from '../helpers/http';
+import {localEnv, testConfig} from '../helpers/http';
+import {captureLogger} from '../helpers/logging';
 import {temporaryDirectory} from '../helpers/tooling';
 import {installProcessHandlers} from '../../src/infrastructures/process-handlers';
 

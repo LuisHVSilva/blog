@@ -37,7 +37,21 @@ try {
         return found;
     });
     console.log(`Running ${files.length} test file(s): ${[...new Set(selected)].join(', ')}.`);
-    const env = {...process.env, NODE_ENV: 'test'};
+    const env = {
+        ...process.env,
+        NODE_ENV: 'test',
+        // Match docker-compose-test.yml for local runs; CI and callers may override every value.
+        TEST_DB_HOST: process.env.TEST_DB_HOST ?? '127.0.0.1',
+        TEST_DB_PORT: process.env.TEST_DB_PORT ?? '15432',
+        TEST_DB_NAME: process.env.TEST_DB_NAME ?? 'blog_test_migrations',
+        TEST_DB_USERNAME: process.env.TEST_DB_USERNAME ?? 'blog_app',
+        TEST_DB_PASSWORD: process.env.TEST_DB_PASSWORD ?? 'blog_app_test_only',
+        MIGRATOR_DB_HOST: process.env.MIGRATOR_DB_HOST ?? '127.0.0.1',
+        MIGRATOR_DB_PORT: process.env.MIGRATOR_DB_PORT ?? '15432',
+        MIGRATOR_DB_NAME: process.env.MIGRATOR_DB_NAME ?? 'blog_test_migrations',
+        MIGRATOR_DB_USERNAME: process.env.MIGRATOR_DB_USERNAME ?? 'blog_migrator',
+        MIGRATOR_DB_PASSWORD: process.env.MIGRATOR_DB_PASSWORD ?? 'blog_migrator_test_only',
+    };
     // A runner exercised from node:test must start its own independent test harness.
     delete env.NODE_TEST_CONTEXT;
     const child = spawn(process.execPath, ['--import', 'tsx', '--test', ...files], {

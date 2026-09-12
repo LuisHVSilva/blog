@@ -1,8 +1,8 @@
-import {Table, DataType, BelongsTo, ForeignKey} from 'sequelize-typescript';
+import {BelongsTo, DataType, ForeignKey, Table} from 'sequelize-typescript';
 import type {InferAttributes, InferCreationAttributes, NonAttribute} from 'sequelize';
 import {BaseModel} from '../base/base.model';
 import {DbColumn} from '../decorators/dbColumn';
-import type {Locale, TranslationStatus} from '../../../../modules/publishing/domain/article';
+import type {Locale, TranslationStatus} from '../../../../modules/publishing/domain/publishing.types';
 import {TagModel} from './tag.model';
 
 @Table({tableName: 'tag_translations', timestamps: false, freezeTableName: true})

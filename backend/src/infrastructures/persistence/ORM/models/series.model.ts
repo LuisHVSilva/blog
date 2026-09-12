@@ -1,8 +1,8 @@
-import {Table, DataType} from 'sequelize-typescript';
+import {DataType, Table} from 'sequelize-typescript';
 import type {InferAttributes, InferCreationAttributes} from 'sequelize';
 import {BaseAuditModel} from '../base/baseAudit.model';
 import {DbColumn} from '../decorators/dbColumn';
-import type {Difficulty, TranslationStatus} from '../../../../modules/publishing/domain/article';
+import type {Difficulty, TranslationStatus} from '../../../../modules/publishing/domain/publishing.types';
 
 @Table({tableName: 'series', timestamps: false, freezeTableName: true})
 export class SeriesModel extends BaseAuditModel<InferAttributes<SeriesModel>, InferCreationAttributes<SeriesModel>> {

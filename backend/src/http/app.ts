@@ -7,20 +7,15 @@ import {createCorsOptions} from './cors';
 import {HttpBoundaryError} from './http-error';
 import {requestContextMiddleware} from './request-context';
 import {requestLog} from './request-log';
-import {HealthRoutes, type Readiness} from './health.routes';
+import {HealthRoutes} from './health.routes';
+import type {Readiness} from '../infrastructures/readiness';
 import {createErrorHandler} from './error-handler';
 
-export const jsonMutation: RequestHandler[] = [
-    (req, _res, next) => {
-        if (!req.is('application/json')) {
-            next(new HttpBoundaryError('UNSUPPORTED_MEDIA_TYPE', 415, 'Content-Type must be application/json.'));
-        }
-
-        return next();
-    },
-    express.json({limit: 16 * 1024, strict: true, inflate: false}),
-];
-
+/**
+ * Configures the Express HTTP boundary with security, observability, health, and error middleware.
+ *
+ * Registered routes are installed after common protections and before the JSON 404 handler.
+ */
 export function createApp({readiness, logger, config, routes = [], now}: {
     readiness: Readiness; logger: ILogger; config: Pick<Config, 'trustProxy' | 'corsOrigins'>;
     routes?: readonly RequestHandler[]; now?: () => number;
@@ -60,3 +55,5 @@ export function createApp({readiness, logger, config, routes = [], now}: {
 
     return app;
 }
+
+export {jsonMutation} from './json-mutation';

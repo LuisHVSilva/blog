@@ -2,7 +2,8 @@ import {readdirSync, readFileSync} from 'node:fs';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {Sequelize} from 'sequelize';
-import {loadConfig, loadEnvironment, type Config} from '../src/config/env';
+import {loadConfig, type Config} from '../src/config/env';
+import {loadEnvironment} from '../src/config/environment';
 import type {Migration} from '../migrations/runner';
 import {MigrationService} from '../src/infrastructures/persistence/ORM/migrations/migrationService';
 

@@ -1,3 +1,4 @@
 import type {IUseCase} from '../../../../../shared/interfaces/useCase.interface';
-import type {VisibilityInput, ImportResult} from '../../../domain/editorial.types';
+import type {ImportResult, VisibilityInput} from '../../../domain/editorial.types';
+
 export interface IPublishArticleUseCase extends IUseCase<VisibilityInput, ImportResult> {}

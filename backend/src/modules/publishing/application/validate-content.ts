@@ -1,1 +1,1 @@
-export type {ParsedContent, ContentDiagnostic, ContentValidation} from '../domain/services/contentValidation.service';
+export type {ParsedContent, ContentDiagnostic, ContentValidation} from '../domain/content-validation.types';

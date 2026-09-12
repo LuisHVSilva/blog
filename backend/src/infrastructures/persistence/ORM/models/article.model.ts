@@ -1,8 +1,8 @@
-import {Table, DataType, BelongsTo, ForeignKey} from 'sequelize-typescript';
+import {BelongsTo, DataType, ForeignKey, Table} from 'sequelize-typescript';
 import type {InferAttributes, InferCreationAttributes, NonAttribute} from 'sequelize';
 import {BaseCreatedModel} from '../base/baseAudit.model';
 import {DbColumn} from '../decorators/dbColumn';
-import type {Locale, Difficulty} from '../../../../modules/publishing/domain/article';
+import type {Difficulty, Locale} from '../../../../modules/publishing/domain/publishing.types';
 import {AuthorProfileModel} from './authorProfile.model';
 
 @Table({tableName: 'articles', timestamps: false, freezeTableName: true})

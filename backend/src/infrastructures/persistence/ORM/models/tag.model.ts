@@ -1,4 +1,4 @@
-import {Table, DataType} from 'sequelize-typescript';
+import {DataType, Table} from 'sequelize-typescript';
 import type {InferAttributes, InferCreationAttributes} from 'sequelize';
 import {BaseCreatedModel} from '../base/baseAudit.model';
 import {DbColumn} from '../decorators/dbColumn';
@@ -10,5 +10,4 @@ export class TagModel extends BaseCreatedModel<InferAttributes<TagModel>, InferC
 
     @DbColumn(DataType.TEXT, {allowNull: false, unique: true})
     declare key: string;
-
 }

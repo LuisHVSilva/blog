@@ -3,6 +3,7 @@ import type {IAuthorProfileRepository} from '../repositories/authorProfile.repos
 import type {EditorialCatalog} from '../editorial-catalog';
 import {AuthorProfile} from '../entities/authorProfile';
 import {PublishingConflictError} from '../publishing.errors';
+
 export const defaultAuthorId = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 export class AuthorProfileService implements IAuthorProfileService {
     constructor(private readonly repository: IAuthorProfileRepository) {}

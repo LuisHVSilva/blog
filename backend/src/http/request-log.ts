@@ -1,14 +1,8 @@
+import {safelyLog} from '../infrastructures/logging/safely-log';
 import type {RequestHandler} from 'express';
 import type {ILogger} from '../infrastructures/logging/logger.interface';
 import {LoggerContext} from '../infrastructures/logging/logger.context';
 import {RequestContext, RequestLogContext} from '../infrastructures/logging/request-context';
-
-export function safelyLog(write: () => Promise<void>): void {
-    try {
-        void write().catch(() => undefined);
-    } catch { /* Logging must not break a response or shutdown. */
-    }
-}
 
 export function requestLog(logger: ILogger, now: () => number = () => performance.now()): RequestHandler {
     return (req, res, next) => {
@@ -47,3 +41,5 @@ export function requestLog(logger: ILogger, now: () => number = () => performanc
         next();
     };
 }
+
+export {safelyLog} from '../infrastructures/logging/safely-log';

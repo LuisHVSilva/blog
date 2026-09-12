@@ -1,4 +1,5 @@
 import type {EditionArticleInput} from '../editorial.types';
+
 export interface IEditorialClock { now(): Date; }
 export interface IContentHashService {
     hash(value: unknown): string;

@@ -1,4 +1,4 @@
-import {Table, DataType, BelongsTo, ForeignKey} from 'sequelize-typescript';
+import {BelongsTo, DataType, ForeignKey, Table} from 'sequelize-typescript';
 import type {InferAttributes, InferCreationAttributes, NonAttribute} from 'sequelize';
 import {BaseModel} from '../base/base.model';
 import {DbColumn} from '../decorators/dbColumn';
@@ -20,6 +20,7 @@ export class SeriesArticleModel extends BaseModel<InferAttributes<SeriesArticleM
 
     @BelongsTo(() => SeriesModel, {foreignKey: 'seriesId', onDelete: 'RESTRICT'})
     declare series?: NonAttribute<SeriesModel>;
+
     @BelongsTo(() => ArticleModel, {foreignKey: 'articleId', onDelete: 'RESTRICT'})
     declare article?: NonAttribute<ArticleModel>;
 }

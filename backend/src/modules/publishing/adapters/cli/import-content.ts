@@ -1,17 +1,21 @@
-import {parseContentRoot} from './content-parser';
-import {ContentValidationService} from '../../domain/services/contentValidation.service';
+import {PublishingValidationError} from '../../domain/publishing.errors';
 import {ValidateContentUseCase} from '../../application/useCases/validateContent/validateContent.useCase';
-import {EditorialComposition} from '../../../../infrastructures/di/editorial.composition';
+import {ContentValidationService} from '../../domain/services/contentValidation.service';
+import {loadConfig} from '../../../../config/env';
+import {loadEnvironment} from '../../../../config/environment';
 import {Database} from '../../../../infrastructures/database';
-import {loadConfig, loadEnvironment} from '../../../../config/env';
+import {EditorialComposition} from '../../../../infrastructures/di/editorial.composition';
 import {argument, validateArguments} from './arguments';
+import {parseContentRoot} from './content-parser';
 import {reportFailure} from './failure';
-import {PublishingValidationError} from '../../application/publishing.errors';
 
 export class ImportContentCli {
-    static async execute(argv = process.argv.slice(2)) {
+    static async execute(argv: readonly string[] = process.argv.slice(2)) {
         validateArguments(argv, ['--root', '--expected-revision', '--operator-id', '--revision'], ['--dry-run']);
-        const root = argument(argv, '--root'); const expectedRevisionArgument = argument(argv, '--expected-revision'); const operatorId = argument(argv, '--operator-id'); const dryRun = argv.includes('--dry-run');
+        const root = argument(argv, '--root');
+        const expectedRevisionArgument = argument(argv, '--expected-revision');
+        const operatorId = argument(argv, '--operator-id');
+        const dryRun = argv.includes('--dry-run');
         const revision = argument(argv, '--revision');
         if (!revision) throw new PublishingValidationError('Provide --revision identifying the reviewed source edition.');
         if (!root || !expectedRevisionArgument || !operatorId) throw new PublishingValidationError('Use --root, --expected-revision and --operator-id. Use empty only for the first import.');
