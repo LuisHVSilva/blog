@@ -1,5 +1,6 @@
 import type {Difficulty, Locale} from './publishing.types';
 import type {TranslationSeo} from './entities/articleTranslation';
+import type {HomeContent} from './home-content';
 
 /** Localized, publicly visible article metadata used in collection responses. */
 export type ArticleSummary = Readonly<{
@@ -70,6 +71,7 @@ export type PublicSnapshot = Readonly<{
     revision: string;
     generatedAt: string;
     siteOrigin: string;
+    home?: readonly HomeContent[];
     articles: readonly ArticleDetail[];
     tags: readonly TagSummary[];
     series: readonly SeriesDetail[];

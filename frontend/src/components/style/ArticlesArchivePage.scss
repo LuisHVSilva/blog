@@ -3,7 +3,7 @@
 
 .archive-card__placeholder { display: block; width: fit-content; margin-bottom: .35rem; border: 1px solid var(--color-tertiary); border-radius: $radius-sm; padding: .2rem .35rem; color: var(--color-tertiary); font-family: $font-code; font-size: .6rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 
-.articles-archive main {
+.articles-archive {
   padding: 3rem 0 4rem;
 }
 
@@ -24,6 +24,37 @@
   color: var(--color-text-secondary);
   font-size: 1.125rem;
   line-height: 1.6;
+}
+
+.archive-hero__eyebrow {
+  margin: 0 0 .65rem;
+  color: var(--color-primary);
+  font-family: $font-code;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.archive-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin: 0 0 2rem;
+}
+
+.archive-controls label {
+  color: var(--color-text-secondary);
+}
+
+.archive-controls select {
+  min-height: 2.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-base;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  padding: .4rem .65rem;
 }
 
 .archive-hero label {
@@ -157,6 +188,7 @@
 }
 
 .archive-card {
+  position: relative;
   display: flex;
   min-height: 22rem;
   flex-direction: column;
@@ -164,12 +196,26 @@
   border-radius: $radius-md;
   background: var(--color-surface);
   padding: 1.5rem;
-  transition: border-color 180ms ease, background-color 180ms ease;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
-.archive-card:hover {
+.archive-card:hover, .archive-card:has(.archive-card__link:focus-visible) {
   border-color: var(--color-primary);
   background: var(--color-surface-subtle);
+  box-shadow: 0 .75rem 1.5rem color-mix(in srgb, var(--color-primary) 13%, transparent);
+  transform: translateY(-.2rem);
+}
+
+.archive-card__link {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.archive-card__link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
 }
 
 .archive-card__header {
@@ -240,6 +286,8 @@
 }
 
 .archive-card footer > div {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   gap: .4rem;
@@ -290,7 +338,7 @@
   margin-top: 3rem;
 }
 
-.archive-pagination button, .archive-pagination span {
+.archive-pagination a, .archive-pagination span {
   display: grid;
   width: 2.5rem;
   height: 2.5rem;
@@ -301,19 +349,14 @@
   color: var(--color-text-primary);
 }
 
-.archive-pagination button:hover:not(:disabled) {
+.archive-pagination a:hover {
   background: var(--color-surface-raised);
 }
 
-.archive-pagination button[aria-current="page"] {
+.archive-pagination a[aria-current="page"] {
   border-color: var(--color-primary);
   background: var(--color-primary);
   color: var(--color-on-primary);
-}
-
-.archive-pagination button:disabled {
-  cursor: not-allowed;
-  opacity: .3;
 }
 
 @media (max-width: calc($breakpoint-desktop - 0.0625rem)) {

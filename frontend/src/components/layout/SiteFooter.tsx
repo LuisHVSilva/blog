@@ -1,28 +1,23 @@
-import {useI18n} from "../../i18n/useI18n";
-import {Icon} from "../ui/Icon";
-import {Container} from "./Container";
-import "../style/SiteFooter.scss";
+import {navigationCopy} from '../../i18n/published-copy';
+import {publicPath} from '../../routing/public-routes';
+import {Container} from './Container';
+import '../style/SiteFooter.scss';
 
-export function SiteFooter() {
-    const {locale} = useI18n();
-    const portuguese = locale === "pt-BR";
-    const links = portuguese ? ["Status", "Segurança", "Privacidade", "Open source"] : ["Status", "Security", "Privacy", "Open source"];
+export function SiteFooter({locale = 'pt-BR'}: { locale?: string }) {
+    const copy = navigationCopy[locale === 'pt-BR' ? 'pt-BR' : 'en'];
     return (
         <footer className="site-footer"><Container className="site-footer__inner">
-            <div>
-                <strong>DEVHUB</strong>
-                <p>© {new Date().getFullYear()} DevHub
-                    Engineering. {portuguese ? "Conhecimento sistemático para arquitetos de software." : "Systematic knowledge for software architects."}
-                </p>
-            </div>
-            <nav aria-label={portuguese ? "Rodapé" : "Footer"} className="site-footer__links">{links.map((link) =>
-                <a href="#top" key={link}>{link}</a>)}
-            </nav>
-            <nav aria-label={portuguese ? "Redes sociais" : "Social links"} className="site-footer__social">
-                <a aria-label="GitHub" href="https://github.com" rel="noreferrer" target="_blank"><Icon name="github"/></a>
-                <a aria-label="Terminal" href="#top"><Icon name="terminal"/></a>
+            <strong>DevHub</strong>
+            <nav className="site-footer__links" aria-label={copy.footer}>
+                <a href={publicPath(locale, 'articles')}>{copy.articles}</a>
+                <a href={publicPath(locale, 'tags')}>Tags</a><a href={publicPath(locale, 'series')}>{copy.series}</a>
+                <a href={publicPath(locale, 'projects')}>{copy.projects}</a>
+                <a href={publicPath(locale, 'about')}>{copy.about}</a><a
+                href={publicPath(locale, 'privacy')}>{copy.privacy}</a>
+                <a href={publicPath(locale, 'contact')}>{copy.contact}</a><a
+                href={publicPath(locale, 'security')}>{copy.security}</a>
             </nav>
         </Container>
         </footer>
-    );
+    )
 }

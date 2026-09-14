@@ -4,6 +4,8 @@
   box-sizing: border-box;
 }
 
+[hidden] { display: none !important; }
+
 html {
   background: var(--color-background);
   color: var(--color-text-primary);
@@ -16,7 +18,6 @@ body {
   min-height: 100vh;
   margin: 0;
   background: var(--color-background);
-  overflow-x: hidden;
 }
 
 button,
@@ -70,13 +71,26 @@ a {
   border: 0;
 }
 
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: .5rem;
+  left: .5rem;
+  transform: translateY(-200%);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  padding: .5rem .75rem;
+}
+
+.skip-link:focus { transform: translateY(0); }
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     scroll-behavior: auto;
-    transition-duration: 0.01ms;
-    animation-duration: 0.01ms;
-    animation-iteration-count: 1;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

@@ -6,6 +6,7 @@ import type {IRevisionService} from './revision.service.interface';
 import type {IArticlePathService} from './articlePath.service.interface';
 import type {IEditorialClock, IEditorialUnitOfWork} from './editorialRuntime.interface';
 import type {PublicSnapshot, SeriesDetail, TagSummary} from '../public-content.types';
+import {homeContent} from '../home-content';
 
 /** Produces a transactionally consistent, deployable view of all public publishing data. */
 export class SnapshotService implements ISnapshotService {
@@ -60,6 +61,7 @@ export class SnapshotService implements ISnapshotService {
                 revision: revision.revision,
                 generatedAt: this.clock.now().toISOString(),
                 siteOrigin: this.siteOrigin,
+                home: homeContent(articles, tags, series),
                 articles,
                 tags,
                 series,

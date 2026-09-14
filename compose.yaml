@@ -1,4 +1,4 @@
-name: blog-p0-local
+name: blog-build
 x-environment: &environment
   NODE_ENV: dev
   PORT: 3010
@@ -86,7 +86,7 @@ services:
       dockerfile: Dockerfile.local
     volumes:
       - snapshot:/app/generated:ro
-      - site:/app/dist
+      - site:/release
     depends_on:
       content: {condition: service_completed_successfully}
   web:

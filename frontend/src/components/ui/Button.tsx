@@ -32,10 +32,8 @@ export function Button({children, variant = "secondary", icon, iconOnlyLabel, cl
     );
 
     if ("href" in props && props.href) {
-        const anchorProps = props;
-
         return (
-            <a className={classes} {...anchorProps}>
+            <a className={classes} {...(props)}>
                 {content}
             </a>
         );

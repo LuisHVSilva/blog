@@ -1,0 +1,57 @@
+@use "tokens" as *;
+
+.site-page {
+  max-width: $reading-width;
+  padding: 3rem 0 4rem;
+}
+
+.site-page__hero {
+  margin-bottom: 2rem;
+}
+
+.site-page__hero > p {
+  margin: 0 0 .65rem;
+  color: var(--color-primary);
+  font-family: $font-code;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.site-page__hero h1 {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: clamp(2rem, 5vw, 2.75rem);
+}
+
+.site-page__content {
+  display: grid;
+  gap: 1.25rem;
+  color: var(--color-text-secondary);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.site-page__content p {
+  margin: 0;
+}
+
+.site-page__content nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-top: .5rem;
+}
+
+.site-page__content nav a {
+  border: 1px solid var(--color-border);
+  border-radius: $radius-base;
+  padding: .55rem .75rem;
+  color: var(--color-text-primary);
+
+  &:hover, &:focus-visible {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}

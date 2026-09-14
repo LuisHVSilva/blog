@@ -11,6 +11,7 @@
     "dev": "npm run dev:database && npm run dev:api",
     "dev:compose": "docker compose --env-file .env.dev -f docker-compose-develop.yml up --build",
     "production:compose": "docker compose --env-file .env.production up --build",
+    "dev:debug": "npm run dev:database && cross-env NODE_ENV=dev node --inspect-brk --import tsx --watch src/main.ts",
     "start": "node dist/src/main.js",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit -p tsconfig.test.json",

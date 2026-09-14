@@ -29,31 +29,42 @@ export async function smoke(snapshot, revision, base, apiBase = base) {
         return response;
     };
     const manifestResponse = await get('/publication.json');
-    if (!manifestResponse.ok || (await manifestResponse.json()).revision !== revision) throw new Error('Site revision diverges.');
+    if (!manifestResponse.ok) throw new Error('Site publication manifest is unavailable.');
+    const manifest = await manifestResponse.json();
+    if (manifest.revision !== revision || !Array.isArray(manifest.urls)) throw new Error('Site revision diverges.');
     const sitemap = await (await get('/sitemap.xml')).text();
+    for (const url of manifest.urls) {
+        const parsed = new URL(url);
+        if (parsed.origin !== snapshot.siteOrigin || parsed.search || parsed.hash || !sitemap.includes(`<loc>${url}</loc>`)) throw new Error('Site discovery artifact diverges.');
+        const pageResponse = await get(parsed.pathname); const pageHtml = await pageResponse.text();
+        if (!pageResponse.ok || !pageHtml.includes(`rel="canonical" href="${url}"`)) throw new Error('Site canonical artifact diverges.');
+    }
     for (const article of snapshot.articles) {
-        const response = await get(`/api/v1/articles/by-slug/${article.locale}/${article.slug}`);
-        if (!response.ok) throw new Error('Public article API is unavailable.');
-        const live = await response.json();
-        if (live.translationId !== article.translationId || live.bodyMarkdown !== article.bodyMarkdown || live.updatedAt !== article.updatedAt) throw new Error('API and snapshot diverge.');
+        if (apiBase) {
+            const response = await get(`/api/v1/articles/by-slug/${article.locale}/${article.slug}`);
+            if (!response.ok) throw new Error('Public article API is unavailable.');
+            const live = await response.json();
+            if (live.translationId !== article.translationId || live.bodyMarkdown !== article.bodyMarkdown || live.updatedAt !== article.updatedAt) throw new Error('API and snapshot diverge.');
+        }
         const htmlResponse = await get(new URL(article.canonical).pathname);
         const html = await htmlResponse.text();
         if (!htmlResponse.ok || !html.includes(`lang="${article.locale}"`) || !html.includes(escape(article.title)) || !html.includes(`content="${revision}"`) || !html.includes('<article') || !html.includes('<p>')) throw new Error('Article HTML is incomplete or stale.');
         if (!sitemap.includes(article.canonical.replaceAll('&', '&amp;'))) throw new Error('Article is absent from sitemap.');
     }
-    for (const locale of ['pt-BR', 'en']) {
+    if (apiBase) for (const locale of ['pt-BR', 'en']) {
         const response = await get(`/api/v1/articles?locale=${locale}&limit=50`);
         const page = await response.json();
         if (!response.ok || page.pagination.total !== snapshot.articles.filter((article) => article.locale === locale).length) throw new Error('API catalogue count diverges.');
     }
-    if ((await get('/p0-smoke-missing-path')).status !== 404) throw new Error('Unknown site paths must return 404.');
-    for (const redirect of snapshot.redirects) {
+    const missing = await get('/p0-smoke-missing-path');
+    if (missing.status !== 404 || missing.headers.get('x-robots-tag') !== 'noindex, follow') throw new Error('Unknown site paths must return noindex 404.');
+    for (const redirect of [{from: '/', to: '/pt-BR/articles'}, {from: '/pt-BR', to: '/pt-BR/articles'}, {from: '/en', to: '/en/articles'}, ...snapshot.redirects]) {
         const response = await get(redirect.from);
         if (response.status !== 308 || new URL(response.headers.get('location'), base).pathname !== redirect.to) throw new Error('Redirect diverges.');
     }
-    return {revision, articles: snapshot.articles.length, mode: 'api-and-html'};
+    return {revision, articles: snapshot.articles.length, mode: apiBase ? 'api-and-html' : 'html-only'};
 }
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     const [filename, revision, base, apiBase] = process.argv.slice(2);
-    Promise.resolve().then(() => smoke(JSON.parse(readFileSync(filename, 'utf8')), revision, base, apiBase)).then((result) => console.log(JSON.stringify(result))).catch((error) => { console.error(error.message); process.exitCode = 1; });
+    Promise.resolve().then(() => smoke(JSON.parse(readFileSync(filename, 'utf8')), revision, base, apiBase === '-' ? false : apiBase)).then((result) => console.log(JSON.stringify(result))).catch((error) => { console.error(error.message); process.exitCode = 1; });
 }
