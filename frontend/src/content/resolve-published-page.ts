@@ -8,6 +8,7 @@ export type ResolvedPublishedPage = {
     article?: PublishedSnapshot['articles'][number];
     series?: PublishedSnapshot['series'][number];
     tag?: PublishedSnapshot['tags'][number];
+    project?: PublishedSnapshot['projects'][number];
     archivePage?: number;
     home?: true;
     sitePage?: InstitutionalPage;
@@ -26,6 +27,7 @@ export function resolvePublishedPageFromSnapshot(snapshot: PublishedSnapshot, pa
     const tag = route.kind === 'tag'
         ? snapshot.tags.find((item) => canonicalPath(item.canonical) === route.pathname)
         : undefined;
+    const project = route.kind === 'project' ? snapshot.projects.find((item) => canonicalPath(item.canonical) === route.pathname) : undefined;
 
     return {
         locale: route.locale,
@@ -33,6 +35,7 @@ export function resolvePublishedPageFromSnapshot(snapshot: PublishedSnapshot, pa
         article,
         series,
         tag,
+        project,
         archivePage: route.kind === 'archive' ? route.page : undefined,
         home: route.kind === 'home' ? true : undefined,
         sitePage: route.kind === 'site' ? route.page : undefined,

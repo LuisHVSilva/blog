@@ -17,6 +17,7 @@ import {SeriesArticlePersistence} from '../persistence/adapters/seriesArticle.pe
 import {PublicationEditionPersistence} from '../persistence/adapters/publicationEdition.persistence';
 import {PublicationRevisionPersistence} from '../persistence/adapters/publicationRevision.persistence';
 import {ArticlePathPersistence} from '../persistence/adapters/articlePath.persistence';
+import {ProjectPersistence} from '../persistence/adapters/project.persistence';
 import {ArticleService} from '../../modules/publishing/domain/services/article.service';
 import {TagService} from '../../modules/publishing/domain/services/tag.service';
 import {SeriesService} from '../../modules/publishing/domain/services/series.service';
@@ -75,7 +76,8 @@ export class EditorialComposition {
         const authors = new AuthorProfileService(new AuthorProfilePersistence(database, context));
         const tags = new TagEditorialService(new TagPersistence(database, context), new TagTranslationPersistence(database, context));
         const series = new SeriesEditorialService(new SeriesDefinitionPersistence(database, context), new SeriesTranslationPersistence(database, context), new SeriesArticlePersistence(database, context));
-        const catalogue = new CatalogService(authors, tags, series, article, translation, new ArticleTagPersistence(database, context));
+        const projects = new ProjectPersistence(database, siteOrigin, context);
+        const catalogue = new CatalogService(authors, tags, series, article, translation, new ArticleTagPersistence(database, context), projects);
         const revisions = new RevisionService(new PublicationRevisionPersistence(database, context), new PublicationEditionPersistence(database, context));
         const paths = new ArticlePathService(new ArticlePathPersistence(database, context));
         const validation = new ContentValidationService();
@@ -83,7 +85,7 @@ export class EditorialComposition {
         const publicArticles = new ArticleService(new PublicArticleQueryPersistence(database, siteOrigin, context));
         const publicTags = new TagService(new PublicTagPersistence(database, siteOrigin, context));
         const publicSeries = new SeriesService(new PublicSeriesPersistence(database, siteOrigin, context), publicArticles);
-        const snapshot = new SnapshotService(new ReadSnapshotUnitOfWork(database, context), publicArticles, publicTags, publicSeries, revisions, paths, clock, siteOrigin);
+        const snapshot = new SnapshotService(new ReadSnapshotUnitOfWork(database, context), publicArticles, publicTags, publicSeries, projects, revisions, paths, clock, siteOrigin);
         return {
             importContent: new ImportContentUseCase(publication),
             publishArticle: new PublishArticleUseCase(publication),

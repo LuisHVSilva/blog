@@ -26,6 +26,8 @@ import {migration as grants} from '../../migrations/004-editorial-app-grants';
 import {migration as invariants} from '../../migrations/005-publication-invariants';
 import {migration as metadata} from '../../migrations/006-editorial-metadata';
 import {migration as revisions} from '../../migrations/007-editorial-content-revisions';
+import {migration as projectsMigration} from '../../migrations/008-projects';
+import {ProjectPersistence} from '../../src/infrastructures/persistence/adapters/project.persistence';
 import {EditorialComposition} from '../../src/infrastructures/di/editorial.composition';
 import {PublishingHttpContainer} from '../../src/infrastructures/di/publishingHttp.container';
 import {buildArticlesRouter} from '../../src/modules/publishing/adapters/http/routes/articles.router';
@@ -87,7 +89,7 @@ test.before(async () => {
     });
     await migrator.transaction(async (transaction) => {
         await migrator.query(`SET LOCAL search_path TO ${schema}`, {transaction});
-        for (const migration of [editorial, paths, grants, invariants, metadata, revisions]) await migration.up(migrator, transaction);
+        for (const migration of [editorial, paths, grants, invariants, metadata, revisions, projectsMigration]) await migration.up(migrator, transaction);
     });
 });
 test.after(async () => {
@@ -157,6 +159,21 @@ test('P0: atomic import, revision CAS, publication, alias, withdrawal, snapshot 
     await assert.rejects(store.publishArticle.execute(operation('no-restore', 'archive-translation')), /Restore/);
     await store.restoreArticle.execute({...operation('restore-translation', 'archive-translation'), reason: 'Restore reviewed translation'});
     await request(api).get('/api/v1/articles/by-slug/pt-BR/original').expect(404);
+});
+
+test('projects: published localized catalogue records are exposed through the API', async () => {
+    const id = randomUUID();
+    await appDb.transaction(async (transaction) => {
+        await new ProjectPersistence(appDb, 'https://example.test', transaction).write([{
+            id, key: 'editorial-project', status: 'published', createdAt: now.toISOString(),
+            translations: [{locale: 'pt-BR', slug: 'projeto-editorial', title: 'Projeto editorial', description: 'Projeto publicado por catálogo.', repositoryUrl: 'https://github.com/example/project', technologies: ['TypeScript', 'PostgreSQL'], status: 'published'}]
+        }], now);
+    });
+    const listing = await request(api).get('/api/v1/projects?locale=pt-BR').expect(200);
+    assert.equal(listing.body[0].canonical, 'https://example.test/pt-BR/projects/projeto-editorial');
+    const detail = await request(api).get('/api/v1/projects/by-slug/pt-BR/projeto-editorial').expect(200);
+    assert.deepEqual(detail.body.technologies, ['TypeScript', 'PostgreSQL']);
+    await request(api).get('/api/v1/projects/by-slug/pt-BR/missing').expect(404);
 });
 
 test('ORM: every registered model matches the migration columns, nullability and primary key', async () => {

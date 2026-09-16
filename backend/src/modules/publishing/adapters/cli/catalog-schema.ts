@@ -43,6 +43,14 @@ export const catalogSchema = z.object({
             position: z.number().int().positive()
         }).strict())
     }).strict()),
+    projects: z.array(z.object({
+        id: z.uuid(), key: slug, status, createdAt: z.iso.datetime(),
+        translations: z.array(z.object({
+            locale, slug, title: text(200), description: text(1000),
+            repositoryUrl: z.url().optional(), demoUrl: z.url().optional(),
+            technologies: z.array(text(80)).max(20), status
+        }).strict())
+    }).strict()).default([]),
     articles: z.array(z.object({
         id: z.uuid(),
         sourceLocale: locale,
@@ -69,6 +77,8 @@ export const catalogSchema = z.object({
     unique(catalog.tags.map((item) => item.id), 'tag');
     unique(catalog.tags.map((item) => item.key), 'tag key');
     unique(catalog.series.map((item) => item.id), 'series');
+    unique(catalog.projects.map((item) => item.id), 'project');
+    unique(catalog.projects.map((item) => item.key), 'project key');
     unique(catalog.articles.map((item) => item.id), 'article');
 
     const authors = new Set(catalog.authors.map((item) => item.id));
@@ -94,9 +104,11 @@ export const catalogSchema = z.object({
     for (const entity of [...catalog.tags, ...catalog.series]) {
         unique(entity.translations.map((item) => item.locale), 'translation locale');
     }
+    for (const project of catalog.projects) unique(project.translations.map((item) => item.locale), 'project translation locale');
 
     unique(catalog.tags.flatMap((item) => item.translations.map((t) => `${t.locale}:${t.slug}`)), 'tag slug');
     unique(catalog.series.flatMap((item) => item.translations.map((t) => `${t.locale}:${t.slug}`)), 'series slug');
+    unique(catalog.projects.flatMap((item) => item.translations.map((t) => `${t.locale}:${t.slug}`)), 'project slug');
 });
 
 export type CatalogInput = z.infer<typeof catalogSchema>;

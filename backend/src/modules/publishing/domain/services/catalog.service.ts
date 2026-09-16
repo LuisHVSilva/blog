@@ -10,17 +10,20 @@ import {Article} from '../article';
 import {ArticleTranslation} from '../entities/articleTranslation';
 import {ArticleTag} from '../entities/articleTag';
 import {PublishingValidationError} from '../publishing.errors';
+import type {IProjectEditorialService} from './project.service';
 
 export class CatalogService implements ICatalogService {
     constructor(private readonly authors: IAuthorProfileService, private readonly tags: ITagEditorialService,
                 private readonly series: ISeriesEditorialService, private readonly articles: IEditorialArticleService,
-                private readonly translations: IEditorialTranslationService, private readonly articleTags: IArticleTagRepository) {
+                private readonly translations: IEditorialTranslationService, private readonly articleTags: IArticleTagRepository,
+                private readonly projects: IProjectEditorialService) {
     }
 
     async validate(catalog: EditorialCatalog): Promise<void> {
         await this.authors.validate(catalog.authors);
         await this.tags.validate(catalog.tags);
         await this.series.validate(catalog.series);
+        if (catalog.projects.some((project) => !project.translations.length)) throw new PublishingValidationError('Projects require a translation.');
         for (const operation of catalog.operations) if (!operation.reason.trim()) throw new PublishingValidationError('Visibility operations require a reason.');
     }
 
@@ -28,6 +31,7 @@ export class CatalogService implements ICatalogService {
         await this.authors.write(catalog.authors, now);
         await this.tags.write(catalog.tags, now);
         await this.series.write(catalog.series, now);
+        await this.projects.write(catalog.projects, now);
     }
 
     async writeRelations(catalog: EditorialCatalog, now: Date): Promise<void> {

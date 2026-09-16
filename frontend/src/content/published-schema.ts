@@ -75,12 +75,17 @@ export const snapshotSchema = z.object({
             nextArticleId: z.uuid().optional()
         }))
     })),
+    projects: z.array(z.object({
+        id: z.uuid(), locale, slug, title: z.string().min(1), description: z.string().min(1),
+        repositoryUrl: z.url().optional(), demoUrl: z.url().optional(), technologies: z.array(z.string()),
+        publishedAt: z.iso.datetime(), updatedAt: z.iso.datetime(), canonical: z.url()
+    })).default([]),
     redirects: z.array(z.object({
         from: z.string().startsWith('/'), to: z.string().startsWith('/'), status: z.literal(308)
     })),
     urlCatalog: z.array(z.object({
         url: z.url(),
-        kind: z.enum(['article', 'tag', 'series']),
+        kind: z.enum(['article', 'tag', 'series', 'project']),
         locale,
         lastmod: z.iso.datetime(),
         alternates: z.array(z.object({locale, url: z.url()}))
@@ -126,6 +131,7 @@ export const snapshotSchema = z.object({
         ...snapshot.articles.map((item) => ({...item, kind: 'article' as const, collection: 'articles'})),
         ...snapshot.tags.map((item) => ({...item, kind: 'tag' as const, collection: 'tags'})),
         ...snapshot.series.map((item) => ({...item, kind: 'series' as const, collection: 'series'})),
+        ...snapshot.projects.map((item) => ({...item, kind: 'project' as const, collection: 'projects'})),
     ];
     const entityUrls = new Set<string>();
 

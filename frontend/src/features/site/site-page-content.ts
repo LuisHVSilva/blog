@@ -1,6 +1,6 @@
 import type {PublishedLocale} from '../../routing/public-routes';
 
-export type SitePage = 'about' | 'projects' | 'privacy' | 'contact' | 'security';
+export type SitePage = 'about' | 'privacy' | 'contact' | 'security';
 
 type Link = { href: string; label: string };
 export type SitePageCopy = { eyebrow: string; title: string; paragraphs: string[]; links: Link[] };
@@ -15,12 +15,6 @@ const pages: Record<PublishedLocale, Record<SitePage, SitePageCopy>> = {
                 href: 'https://github.com/LuisHVSilva/blog',
                 label: 'Repositorio do projeto'
             }, {href: 'https://www.apache.org/licenses/LICENSE-2.0', label: 'Licenca Apache-2.0'}]
-        },
-        projects: {
-            eyebrow: 'Projetos',
-            title: 'Projetos em preparacao',
-            paragraphs: ['Ainda nao ha projetos publicados.', 'Esta pagina esta pronta para receber projetos quando houver material aprovado, como repositorio, descricao e links publicos verificaveis.'],
-            links: []
         },
         privacy: {
             eyebrow: 'Privacidade',
@@ -50,12 +44,6 @@ const pages: Record<PublishedLocale, Record<SitePage, SitePageCopy>> = {
                 href: 'https://github.com/LuisHVSilva/blog',
                 label: 'Project repository'
             }, {href: 'https://www.apache.org/licenses/LICENSE-2.0', label: 'Apache-2.0 license'}]
-        },
-        projects: {
-            eyebrow: 'Projects',
-            title: 'Projects in preparation',
-            paragraphs: ['There are no published projects yet.', 'This page is ready to receive projects once approved material exists, such as a repository, description, and verified public links.'],
-            links: []
         },
         privacy: {
             eyebrow: 'Privacy',

@@ -8,6 +8,7 @@ import {ArticleSeriesNavigation} from './features/series/components/ArticleSerie
 import {PublishedSearchDialog} from './features/search/components/PublishedSearchDialog';
 import {PublishedSitePage} from './features/site/PublishedSitePage';
 import {PublishedHome} from './features/site/PublishedHome';
+import {PublishedProjects} from './features/site/PublishedProjects';
 import {publishedContent as content} from './content/published-content';
 import {type ResolvedPublishedPage, resolvePublishedPage} from './content/published-page';
 import {pageMetadata} from './seo/metadata';
@@ -25,12 +26,12 @@ export default function PublishedApp({pathname}: {pathname: string}) {
 
     const pt: boolean = page.locale === 'pt-BR';
     const article = page.article;
-    const title = article?.title ?? page.series?.title ?? page.tag?.name ?? (page.found ? (pt ? 'Artigos publicados' : 'Published articles') : '404');
+    const title = article?.title ?? page.series?.title ?? page.tag?.name ?? page.project?.title ?? (page.found ? (pt ? 'Artigos publicados' : 'Published articles') : '404');
     const languageLinks = page.found ? pageMetadata(content, page).alternates : [{
         locale: 'pt-BR',
         url: '/pt-BR/articles'
     }, {locale: 'en', url: '/en/articles'}];
-    const isCollectionPage = page.found && Boolean(page.home || page.archivePage || page.tag || page.series || page.sitePage || page.pathname.endsWith('/tags') || page.pathname.endsWith('/series'));
+    const isCollectionPage = page.found && Boolean(page.home || page.archivePage || page.tag || page.series || page.sitePage || page.pathname.endsWith('/tags') || page.pathname.endsWith('/series') || page.pathname.endsWith('/projects'));
 
     return (
         <div className={`app-shell article-detail${page.home ? ' home-shell' : ''}`} id="top">
@@ -64,7 +65,8 @@ export default function PublishedApp({pathname}: {pathname: string}) {
                         : page.home ? <PublishedHome snapshot={content} locale={page.locale}/>
                         : page.archivePage ?
                             <PublishedArchive snapshot={content} locale={page.locale} page={page.archivePage}/>
-                            : page.sitePage ? <PublishedSitePage locale={page.locale} page={page.sitePage}/>
+                        : page.sitePage ? <PublishedSitePage locale={page.locale} page={page.sitePage}/>
+                                : page.project || page.pathname.endsWith('/projects') ? <PublishedProjects snapshot={content} locale={page.locale} project={page.project}/>
                                 : page.tag || page.pathname.endsWith('/tags') ?
                                     <PublishedTags snapshot={content} locale={page.locale} tagId={page.tag?.id}/>
                                     : page.series || page.pathname.endsWith('/series') ?

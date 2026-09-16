@@ -7,12 +7,13 @@ import type {IArticlePathService} from './articlePath.service.interface';
 import type {IEditorialClock, IEditorialUnitOfWork} from './editorialRuntime.interface';
 import type {PublicSnapshot, SeriesDetail, TagSummary} from '../public-content.types';
 import {homeContent} from '../home-content';
+import type {IPublicProjectRepository} from './project.service';
 
 /** Produces a transactionally consistent, deployable view of all public publishing data. */
 export class SnapshotService implements ISnapshotService {
     constructor(
         private readonly scope: IEditorialUnitOfWork, private readonly articles: IArticleService,
-        private readonly tagsService: ITagService, private readonly seriesService: ISeriesService,
+        private readonly tagsService: ITagService, private readonly seriesService: ISeriesService, private readonly projectsService: IPublicProjectRepository,
         private readonly revisions: IRevisionService, private readonly paths: IArticlePathService,
         private readonly clock: IEditorialClock, private readonly siteOrigin: string
     ) {
@@ -29,6 +30,7 @@ export class SnapshotService implements ISnapshotService {
 
             const articles = (await this.articles.allPublished()).map((article) => article.toDetail());
             const tags: TagSummary[] = [], series: SeriesDetail[] = [];
+            const projects = [] as PublicSnapshot['projects'][number][];
 
             for (const locale of ['pt-BR', 'en'] as const) {
                 tags.push(...await this.tagsService.list(locale));
@@ -38,6 +40,10 @@ export class SnapshotService implements ISnapshotService {
                         throw new Error('Series disappeared within the snapshot.');
                     }
                     series.push(detail);
+                }
+                for (const project of await this.projectsService.list(locale)) {
+                    const detail = await this.projectsService.getBySlug({locale, slug: project.slug});
+                    if (detail) projects.push(detail);
                 }
             }
 
@@ -65,6 +71,7 @@ export class SnapshotService implements ISnapshotService {
                 articles,
                 tags,
                 series,
+                projects,
                 redirects,
                 urlCatalog: [
                     ...articles.map((a) => ({
@@ -79,7 +86,8 @@ export class SnapshotService implements ISnapshotService {
                     })),
                     ...series.map((s) => ({
                         url: s.canonical, kind: 'series' as const, locale: s.locale, lastmod, alternates: []
-                    }))]
+                    })),
+                    ...projects.map((p) => ({url: p.canonical, kind: 'project' as const, locale: p.locale, lastmod: p.updatedAt, alternates: []}))]
             };
         });
     }

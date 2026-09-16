@@ -3,11 +3,11 @@ import type {PublishedSnapshot} from '../content/published-schema';
 export const supportedLocales = ['pt-BR', 'en'] as const;
 export type PublishedLocale = (typeof supportedLocales)[number];
 export const defaultLocale: PublishedLocale = 'pt-BR';
-export const institutionalPages = ['about', 'projects', 'privacy', 'contact', 'security'] as const;
+export const institutionalPages = ['about', 'privacy', 'contact', 'security'] as const;
 export type InstitutionalPage = (typeof institutionalPages)[number];
 
 export function publicPath(locale: string, section: string, slug?: string): string {
-    if (!isPublishedLocale(locale) || !['articles', 'tags', 'series', ...institutionalPages].includes(section)) {
+    if (!isPublishedLocale(locale) || !['articles', 'tags', 'series', 'projects', ...institutionalPages].includes(section)) {
         throw new Error('Invalid public route.');
     }
 
@@ -69,7 +69,7 @@ export function enumerateStaticPaths(snapshot: PublishedSnapshot): string[] {
         ...supportedLocales.flatMap((locale) => {
             const articleCount = snapshot.articles.filter((article) => article.locale === locale).length;
             const archivePages = Math.max(1, Math.ceil(articleCount / 12));
-            return [`/${locale}`, `/${locale}/articles`, ...Array.from({length: archivePages - 1}, (_, index) => `/${locale}/articles/page/${index + 2}`), `/${locale}/tags`, `/${locale}/series`, ...institutionalPages.map((page) => `/${locale}/${page}`)];
+            return [`/${locale}`, `/${locale}/articles`, ...Array.from({length: archivePages - 1}, (_, index) => `/${locale}/articles/page/${index + 2}`), `/${locale}/tags`, `/${locale}/series`, `/${locale}/projects`, ...institutionalPages.map((page) => `/${locale}/${page}`)];
         }),
         ...snapshot.urlCatalog.map((item) => canonicalPath(item.url)),
     ];
@@ -112,7 +112,7 @@ export function resolvePublicRoute(snapshot: PublishedSnapshot, rawPathname: str
         };
     }
 
-    if ([`/${locale}/tags`, `/${locale}/series`].includes(pathname)) {
+    if ([`/${locale}/tags`, `/${locale}/series`, `/${locale}/projects`].includes(pathname)) {
         return {kind: 'index', locale, pathname};
     }
 

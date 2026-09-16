@@ -26,11 +26,17 @@ describe('public routes', () => {
         ]));
     });
 
-    it('enumerates and resolves the localized institutional pages from the same registry', () => {
+    it('enumerates institutional pages and resolves the dynamic projects collection', () => {
         expect(resolvePublicRoute(oneArticleSnapshot, '/en/privacy')).toMatchObject({kind: 'site', locale: 'en', page: 'privacy'});
-        expect(resolvePublicRoute(oneArticleSnapshot, '/pt-BR/projects')).toMatchObject({kind: 'site', locale: 'pt-BR', page: 'projects'});
+        expect(resolvePublicRoute(oneArticleSnapshot, '/pt-BR/projects')).toMatchObject({kind: 'index', locale: 'pt-BR'});
         expect(resolvePublicRoute(oneArticleSnapshot, '/pt-BR/security')).toMatchObject({kind: 'site', locale: 'pt-BR', page: 'security'});
         expect(resolvePublicRoute(oneArticleSnapshot, '/en/unknown')).toMatchObject({kind: 'not-found'});
+    });
+
+    it('resolves a published project detail from the snapshot catalogue', () => {
+        const project = {id: '44444444-4444-4444-8444-444444444444', locale: 'pt-BR', slug: 'projeto-de-teste', title: 'Projeto', description: 'Descrição.', technologies: ['TypeScript'], publishedAt: oneArticleSnapshot.generatedAt, updatedAt: oneArticleSnapshot.generatedAt, canonical: 'https://example.test/pt-BR/projects/projeto-de-teste'};
+        const snapshot = {...oneArticleSnapshot, projects: [project], urlCatalog: [...oneArticleSnapshot.urlCatalog, {url: project.canonical, kind: 'project', locale: project.locale, lastmod: project.updatedAt, alternates: []}]};
+        expect(resolvePublicRoute(snapshot, '/pt-BR/projects/projeto-de-teste')).toMatchObject({kind: 'project', locale: 'pt-BR'});
     });
 
     it('enumerates real archive pages and rejects pages beyond the localized catalog', () => {

@@ -88,6 +88,16 @@ export class ArticlesController {
 
         sendPublicJson(req, res, item);
     }
+    async listProjects(req: Request, res: Response): Promise<void> {
+        this.queryKeys(req.query, ['locale']);
+        sendPublicJson(req, res, await this.useCases.projects.list(this.locale(req.query.locale ?? 'pt-BR')));
+    }
+    async getProjectBySlug(req: Request, res: Response): Promise<void> {
+        this.queryKeys(req.query, []);
+        const project = await this.useCases.projects.getBySlug({locale: this.locale(req.params.locale), slug: this.slug(req.params.slug)});
+        if (!project) return this.missing();
+        sendPublicJson(req, res, project, project.updatedAt);
+    }
 
     private invalid(): never {
         throw new HttpBoundaryError('INVALID_QUERY', 400, 'Request parameters are invalid.');

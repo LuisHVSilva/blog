@@ -64,6 +64,8 @@ export type SeriesDetail = Readonly<SeriesSummary & {
         nextArticleId?: string
     }>[]
 }>;
+export type ProjectSummary = Readonly<{id: string; locale: Locale; slug: string; title: string; description: string; repositoryUrl?: string; demoUrl?: string; publishedAt: string; updatedAt: string; canonical: string}>;
+export type ProjectDetail = Readonly<ProjectSummary & {technologies: readonly string[]}>;
 
 /** Immutable export consumed by static publishing, backup, and release operations. */
 export type PublicSnapshot = Readonly<{
@@ -75,10 +77,11 @@ export type PublicSnapshot = Readonly<{
     articles: readonly ArticleDetail[];
     tags: readonly TagSummary[];
     series: readonly SeriesDetail[];
+    projects: readonly ProjectDetail[];
     redirects: readonly Readonly<{ from: string; to: string; status: 308 }>[];
     urlCatalog: readonly Readonly<{
         url: string;
-        kind: 'article' | 'tag' | 'series';
+        kind: 'article' | 'tag' | 'series' | 'project';
         locale: Locale;
         lastmod: string;
         alternates: readonly Readonly<{ locale: Locale; url: string }>[]

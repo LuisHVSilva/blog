@@ -104,6 +104,9 @@ test('Snapshot service keeps every read within the injected consistent scope and
         async list() { assert.ok(active); return []; },
         async getBySlug() { assert.fail('Unexpected series detail'); },
     }, {
+        async list() { assert.ok(active); return []; },
+        async getBySlug() { assert.fail('Unexpected project detail'); },
+    }, {
         async current() { assert.ok(active); events.push('revision'); return {singleton: true, revision: 'rev', updatedAt: new Date('2026-09-10T00:00:00Z')}; },
         async find() { assert.fail('Unexpected edition lookup'); },
         async record() { assert.fail('Snapshots cannot write'); },

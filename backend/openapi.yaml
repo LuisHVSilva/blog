@@ -78,6 +78,21 @@ paths:
       responses:
         '200': {description: Series and ordered visible navigation, content: {application/json: {schema: {$ref: '#/components/schemas/SeriesDetail'}}}}
         '304': {description: Unchanged representation}
+  /api/v1/projects:
+    get:
+      parameters: [{$ref: '#/components/parameters/LocaleQuery'}]
+      responses:
+        '200': {description: Published localized projects, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/Project'}}}}}
+        '304': {description: Unchanged representation}
+        '400': {$ref: '#/components/responses/Invalid'}
+  /api/v1/projects/by-slug/{locale}/{slug}:
+    get:
+      parameters: [{$ref: '#/components/parameters/LocalePath'}, {$ref: '#/components/parameters/SlugPath'}]
+      responses:
+        '200': {description: Published project detail, content: {application/json: {schema: {$ref: '#/components/schemas/Project'}}}}
+        '304': {description: Unchanged representation}
+        '400': {$ref: '#/components/responses/Invalid'}
+        '404': {$ref: '#/components/responses/NotFound'}
         '400': {$ref: '#/components/responses/Invalid'}
         '404': {$ref: '#/components/responses/NotFound'}
 components:
@@ -175,6 +190,21 @@ components:
                   article: {$ref: '#/components/schemas/ArticleSummary'}
                   previousArticleId: {type: string, format: uuid}
                   nextArticleId: {type: string, format: uuid}
+    Project:
+      type: object
+      required: [id, locale, slug, title, description, technologies, publishedAt, updatedAt, canonical]
+      properties:
+        id: {type: string, format: uuid}
+        locale: {enum: [pt-BR, en]}
+        slug: {$ref: '#/components/schemas/Slug'}
+        title: {type: string, minLength: 1, maxLength: 200}
+        description: {type: string, minLength: 1, maxLength: 1000}
+        technologies: {type: array, items: {type: string}, maxItems: 20}
+        repositoryUrl: {type: string, format: uri}
+        demoUrl: {type: string, format: uri}
+        publishedAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        canonical: {type: string, format: uri}
     Error:
       type: object
       required: [error, requestId]

@@ -35,6 +35,22 @@ export type EditorialCatalog = Readonly<{
         }>[];
         members: readonly Readonly<{ articleId: string; position: number }>[]
     }>[];
+    projects: readonly Readonly<{
+        id: string;
+        key: string;
+        status: TranslationStatus;
+        createdAt: string;
+        translations: readonly Readonly<{
+            locale: Locale;
+            slug: string;
+            title: string;
+            description: string;
+            repositoryUrl?: string;
+            demoUrl?: string;
+            technologies: readonly string[];
+            status: TranslationStatus;
+        }>[];
+    }>[];
     articles: readonly Readonly<{
         id: string;
         sourceLocale: Locale;

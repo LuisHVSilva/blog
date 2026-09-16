@@ -11,6 +11,8 @@ import {GetArticleUseCase} from '../../modules/publishing/application/useCases/g
 import {ListTagsUseCase} from '../../modules/publishing/application/useCases/listTags/listTags.useCase';
 import {ListSeriesUseCase} from '../../modules/publishing/application/useCases/listSeries/listSeries.useCase';
 import {GetSeriesUseCase} from '../../modules/publishing/application/useCases/getSeries/getSeries.useCase';
+import {ProjectPersistence} from '../persistence/adapters/project.persistence';
+import {ProjectService} from '../../modules/publishing/domain/services/project.service';
 
 /** Explicit constructor injection: one graph per connection, no global service locator. */
 export class PublishingQueriesComposition {
@@ -21,10 +23,12 @@ export class PublishingQueriesComposition {
         const articles = new ArticleService(new PublicArticleQueryPersistence(sequelize, siteOrigin, transaction));
         const tags = new TagService(new PublicTagPersistence(sequelize, siteOrigin, transaction));
         const series = new SeriesService(new PublicSeriesPersistence(sequelize, siteOrigin, transaction), articles);
+        const projects = new ProjectService(new ProjectPersistence(sequelize, siteOrigin, transaction));
 
         return {
             listArticles: new ListArticlesUseCase(articles), getArticle: new GetArticleUseCase(articles),
             listTags: new ListTagsUseCase(tags), listSeries: new ListSeriesUseCase(series), getSeries: new GetSeriesUseCase(series),
+            projects,
         };
     }
 }

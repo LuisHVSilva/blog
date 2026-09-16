@@ -16,6 +16,8 @@ export function buildArticlesRouter(container: ControllerContainer): Router {
     router.get('/api/v1/tags', controller.listTags.bind(controller));
     router.get('/api/v1/series', controller.listSeries.bind(controller));
     router.get('/api/v1/series/by-slug/:locale/:slug', controller.getSeriesBySlug.bind(controller));
+    router.get('/api/v1/projects/by-slug/:locale/:slug', controller.getProjectBySlug.bind(controller));
+    router.get('/api/v1/projects', controller.listProjects.bind(controller));
 
     return router;
 }

@@ -58,6 +58,7 @@ function metadataText(page: ResolvedPublishedPage) {
         title: `${page.series.title} | DevHub`,
         description: page.series.description
     };
+    if (page.project) return {name: page.project.title, title: `${page.project.title} | DevHub`, description: page.project.description};
     if (page.sitePage) {
         const copy = sitePageCopy(page.locale, page.sitePage);
         return {name: copy.title, title: `${copy.title} | DevHub`, description: copy.paragraphs[0]};
@@ -117,6 +118,7 @@ function alternateUrls(snapshot: PublishedSnapshot, page: ResolvedPublishedPage,
             url: item.canonical
         })));
     }
+    if (page.project) return uniqueAlternates(snapshot.projects.filter((item) => item.id === page.project!.id && isPublished(snapshot, item.canonical)).map((item) => ({locale: item.locale, url: item.canonical})));
     return uniqueAlternates(structuralAlternates(snapshot, page));
 }
 
@@ -135,7 +137,7 @@ function jsonLd(snapshot: PublishedSnapshot, page: ResolvedPublishedPage, canoni
     };
     return {
         '@context': 'https://schema.org',
-        '@type': page.archivePage || page.tag || page.series || page.pathname.endsWith('/tags') || page.pathname.endsWith('/series') ? 'CollectionPage' : 'WebPage',
+        '@type': page.archivePage || page.tag || page.series || page.pathname.endsWith('/tags') || page.pathname.endsWith('/series') || page.pathname.endsWith('/projects') ? 'CollectionPage' : 'WebPage',
         name: text.name,
         description: text.description,
         inLanguage: page.locale,
@@ -144,7 +146,7 @@ function jsonLd(snapshot: PublishedSnapshot, page: ResolvedPublishedPage, canoni
 }
 
 export function pageMetadata(snapshot: PublishedSnapshot, page: ResolvedPublishedPage): PageMetadata {
-    const canonical = page.found ? page.article?.canonical ?? page.series?.canonical ?? page.tag?.canonical ?? absolute(snapshot, page.pathname) : undefined;
+    const canonical = page.found ? page.article?.canonical ?? page.series?.canonical ?? page.tag?.canonical ?? page.project?.canonical ?? absolute(snapshot, page.pathname) : undefined;
     const text = metadataText(page);
     return {
         title: text.title, description: text.description, canonical, locale: page.locale,
