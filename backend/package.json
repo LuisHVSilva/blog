@@ -34,6 +34,8 @@
     "content:restore": "node dist/src/modules/publishing/adapters/cli/publication-operation.js restore",
     "seed:local": "node dist/scripts/seed-local.js",
     "content:export": "node dist/src/modules/publishing/adapters/cli/export-snapshot.js",
+    "content:release:local": "npm run build && node dist/scripts/release-local.js",
+    "content:release:local:dry-run": "npm run content:release:local -- --dry-run",
     "release:smoke": "node scripts/release-smoke.mjs",
     "restore:guard": "node scripts/restore.mjs",
     "backup": "node scripts/backup.mjs",

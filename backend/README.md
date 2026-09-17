@@ -113,6 +113,8 @@ Copy `.env.example` to `.env.dev` for development. Never commit `.env.dev`, `.en
 | `npm run migrate` / `migrate:status` | Applies or lists versioned migrations using the migrator role. |
 | `npm run seed:local` | Seeds safe local fixture content. |
 | `npm run content:*` | Validates, imports, changes publication state, or exports a snapshot. |
+| `npm run content:release:local` | In dev/test, validates and imports the complete `content/` edition, exports the frontend snapshot, and builds the frontend. It respects source `published` states and is blocked in production. |
+| `npm run content:release:local:dry-run` | Safely previews the local edition import without changing the database, snapshot, or frontend build. |
 
 Start and stop the isolated test database with:
 

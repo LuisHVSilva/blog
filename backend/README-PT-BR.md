@@ -113,6 +113,8 @@ Copie `.env.example` para `.env.dev` no desenvolvimento. Nunca versione `.env.de
 | `npm run migrate` / `migrate:status` | Aplica ou lista migrations pelo papel migrador. |
 | `npm run seed:local` | Carrega conteúdo local seguro. |
 | `npm run content:*` | Valida, importa, muda estado editorial ou exporta snapshot. |
+| `npm run content:release:local` | Em dev/test, valida e importa a edição completa de `content/`, exporta o snapshot do frontend e gera o build do frontend. Respeita os estados `published` da fonte e é bloqueado em produção. |
+| `npm run content:release:local:dry-run` | Mostra com segurança a prévia da importação local, sem alterar banco, snapshot ou build do frontend. |
 
 Para o banco de testes:
 
