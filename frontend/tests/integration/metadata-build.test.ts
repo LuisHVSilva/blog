@@ -24,7 +24,7 @@ it('E10: pre-renders specific localized metadata, safe JSON-LD and one-revision 
         expect(article).not.toContain('</script><script>window.pwned=true</script>');
         const jsonLd = article.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/u)?.[1];
         expect(jsonLd).toBeTruthy(); expect(JSON.parse(jsonLd ?? '{}').headline).toBe(metadataSnapshot.articles[0].title);
-        expect(privacy).toContain('<html lang="en">'); expect(privacy).toContain('Frontend privacy scope | DevHub'); expect(privacy).toContain('rel="canonical" href="http://127.0.0.1/en/privacy"');
+        expect(privacy).toContain('<html lang="en">'); expect(privacy).toContain('Frontend privacy scope | Stackcraft'); expect(privacy).toContain('rel="canonical" href="http://127.0.0.1/en/privacy"');
         expect(missing).toContain('<meta name="robots" content="noindex, follow">'); expect(missing).not.toContain('rel="canonical"');
         expect(readFileSync(path.join(build.dist, 'robots.txt'), 'utf8')).toBe('User-agent: *\nAllow: /\nSitemap: http://127.0.0.1/sitemap.xml\n');
         expect(readFileSync(path.join(build.dist, 'publication.json'), 'utf8')).toContain(metadataSnapshot.revision);

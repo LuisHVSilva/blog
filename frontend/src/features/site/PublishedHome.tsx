@@ -17,7 +17,7 @@ export function PublishedHome({snapshot, locale}: { snapshot: PublishedSnapshot;
     return (
         <div className="published-home">
             <section className="home-hero">
-                <p className="home-label">{pt ? 'Caderno de engenharia // DevHub' : 'Engineering Ledger // DevHub'}</p>
+                <p className="home-label">{pt ? 'Caderno de engenharia // Stackcraft' : 'Engineering Ledger // Stackcraft'}</p>
                 <h1>{pt ? 'Engenharia de sistemas e clareza arquitetural.' : 'Advanced Systems Engineering & Architectural Clarity.'}</h1>
                 <p className="home-hero__description">{pt ? 'Um espaço dedicado à construção de software, ao conhecimento técnico e ao estudo de sistemas distribuídos e infraestrutura frontend.' : 'A resource for software craftsmanship, technical knowledge, and deep dives into distributed systems and frontend infrastructure.'}</p>
                 <div className="home-actions"><a className="home-button home-button--primary"

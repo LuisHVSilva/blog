@@ -10,7 +10,7 @@ const pages: Record<PublishedLocale, Record<SitePage, SitePageCopy>> = {
         about: {
             eyebrow: 'Sobre',
             title: 'Sobre este site',
-            paragraphs: ['DevHub e uma publicacao tecnica organizada em artigos, tags e trilhas editoriais.', 'Esta versao publica somente conteudo editorial confirmado. Projetos e biografia nao sao exibidos enquanto nao houver material aprovado para eles.'],
+            paragraphs: ['Stackcraft e uma publicacao tecnica organizada em artigos, tags e trilhas editoriais.', 'Esta versao publica somente conteudo editorial confirmado. Projetos e biografia nao sao exibidos enquanto nao houver material aprovado para eles.'],
             links: [{
                 href: 'https://github.com/LuisHVSilva/blog',
                 label: 'Repositorio do projeto'
@@ -39,7 +39,7 @@ const pages: Record<PublishedLocale, Record<SitePage, SitePageCopy>> = {
         about: {
             eyebrow: 'About',
             title: 'About this site',
-            paragraphs: ['DevHub is a technical publication organized into articles, tags, and editorial series.', 'This version publishes only confirmed editorial material. Projects and a biography are not shown until approved material exists.'],
+            paragraphs: ['Stackcraft is a technical publication organized into articles, tags, and editorial series.', 'This version publishes only confirmed editorial material. Projects and a biography are not shown until approved material exists.'],
             links: [{
                 href: 'https://github.com/LuisHVSilva/blog',
                 label: 'Project repository'

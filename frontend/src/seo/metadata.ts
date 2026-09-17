@@ -50,43 +50,43 @@ function metadataText(page: ResolvedPublishedPage) {
     };
     if (page.tag) return {
         name: page.tag.name,
-        title: `${page.tag.name} | DevHub`,
+        title: `${page.tag.name} | Stackcraft`,
         description: page.tag.description ?? (pt ? `Artigos publicados sobre ${page.tag.name}.` : `Published articles about ${page.tag.name}.`)
     };
     if (page.series) return {
         name: page.series.title,
-        title: `${page.series.title} | DevHub`,
+        title: `${page.series.title} | Stackcraft`,
         description: page.series.description
     };
-    if (page.project) return {name: page.project.title, title: `${page.project.title} | DevHub`, description: page.project.description};
+    if (page.project) return {name: page.project.title, title: `${page.project.title} | Stackcraft`, description: page.project.description};
     if (page.sitePage) {
         const copy = sitePageCopy(page.locale, page.sitePage);
-        return {name: copy.title, title: `${copy.title} | DevHub`, description: copy.paragraphs[0]};
+        return {name: copy.title, title: `${copy.title} | Stackcraft`, description: copy.paragraphs[0]};
     }
     if (page.home) return {
-        name: 'DevHub',
-        title: pt ? 'DevHub | Engenharia de software' : 'DevHub | Software Engineering Knowledge Hub',
+        name: 'Stackcraft',
+        title: pt ? 'Stackcraft | Engenharia de software' : 'Stackcraft | Software Engineering Knowledge Hub',
         description: pt ? 'Artigos técnicos, séries de leitura e projetos sobre engenharia de software.' : 'Technical articles, reading series, and projects about software engineering.'
     };
     if (page.archivePage) {
         const name = pt ? `Artigos publicados${page.archivePage > 1 ? ` - pagina ${page.archivePage}` : ''}` : `Published articles${page.archivePage > 1 ? ` - page ${page.archivePage}` : ''}`;
         return {
             name,
-            title: `${name} | DevHub`,
+            title: `${name} | Stackcraft`,
             description: pt ? 'Textos tecnicos publicados, organizados por assunto e nivel.' : 'Published technical writing, organized by topic and level.'
         };
     }
     if (page.pathname.endsWith('/tags')) return {
         name: pt ? 'Tags publicadas' : 'Published tags',
-        title: `${pt ? 'Tags publicadas' : 'Published tags'} | DevHub`,
+        title: `${pt ? 'Tags publicadas' : 'Published tags'} | Stackcraft`,
         description: pt ? 'Assuntos que organizam os textos publicados.' : 'Topics that organize published writing.'
     };
     if (page.pathname.endsWith('/series')) return {
         name: pt ? 'Series publicadas' : 'Published series',
-        title: `${pt ? 'Series publicadas' : 'Published series'} | DevHub`,
+        title: `${pt ? 'Series publicadas' : 'Published series'} | Stackcraft`,
         description: pt ? 'Sequencias de leitura definidas pela ordem editorial.' : 'Reading sequences defined by editorial order.'
     };
-    return {name: '404', title: '404 | DevHub', description: pt ? 'Pagina nao encontrada.' : 'Page not found.'};
+    return {name: '404', title: '404 | Stackcraft', description: pt ? 'Pagina nao encontrada.' : 'Page not found.'};
 }
 
 function alternateUrls(snapshot: PublishedSnapshot, page: ResolvedPublishedPage, canonical: string | undefined) {

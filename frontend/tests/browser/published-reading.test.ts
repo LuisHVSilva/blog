@@ -101,7 +101,7 @@ describe('E04/E05 built site', () => {
             expect(await page.locator('.article-content script').count()).toBe(0);
             expect(await page.getByText('Attack', {exact: true}).getAttribute('href')).toBeNull();
             expect(await page.locator('body').evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-            await browserExpect(page.locator('footer')).toContainText('DevHub');
+            await browserExpect(page.locator('footer')).toContainText('Stackcraft');
             expect(errors).toEqual([]);
             await theme.focus();
             await page.evaluate(() => scrollTo(0, 0));

@@ -7,7 +7,7 @@ export function SiteFooter({locale = 'pt-BR'}: { locale?: string }) {
     const copy = navigationCopy[locale === 'pt-BR' ? 'pt-BR' : 'en'];
     return (
         <footer className="site-footer"><Container className="site-footer__inner">
-            <strong>DevHub</strong>
+            <strong>Stackcraft</strong>
             <nav className="site-footer__links" aria-label={copy.footer}>
                 <a href={publicPath(locale, 'articles')}>{copy.articles}</a>
                 <a href={publicPath(locale, 'tags')}>Tags</a><a href={publicPath(locale, 'series')}>{copy.series}</a>

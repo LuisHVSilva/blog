@@ -23,7 +23,7 @@ export function SiteHeader(
         <header className="site-header" data-site-header>
             <Container className="site-header__inner">
                 <a className="site-header__brand" href={`/${locale}`}>
-                    DevHub
+                    Stackcraft
                 </a>
                 <button
                     hidden type="button"
