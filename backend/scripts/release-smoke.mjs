@@ -58,7 +58,7 @@ export async function smoke(snapshot, revision, base, apiBase = base) {
     }
     const missing = await get('/p0-smoke-missing-path');
     if (missing.status !== 404 || missing.headers.get('x-robots-tag') !== 'noindex, follow') throw new Error('Unknown site paths must return noindex 404.');
-    for (const redirect of [{from: '/', to: '/pt-BR/articles'}, {from: '/pt-BR', to: '/pt-BR/articles'}, {from: '/en', to: '/en/articles'}, ...snapshot.redirects]) {
+    for (const redirect of [{from: '/', to: '/pt-BR'}, ...snapshot.redirects]) {
         const response = await get(redirect.from);
         if (response.status !== 308 || new URL(response.headers.get('location'), base).pathname !== redirect.to) throw new Error('Redirect diverges.');
     }

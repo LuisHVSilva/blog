@@ -49,6 +49,11 @@ try {
         assert.equal(result.status, status, url);
         return result;
     }
+    function assertSecurityHeaders(result) {
+        assert.equal(result.headers.get('x-content-type-options'), 'nosniff');
+        assert.equal(result.headers.get('referrer-policy'), 'strict-origin-when-cross-origin');
+        assert.equal(result.headers.get('x-frame-options'), 'DENY');
+    }
     for (const [url, destination] of [['/', '/pt-BR'], ['/pt-BR/articles/old-title/', '/pt-BR/articles/artigo-de-teste']]) {
         const result = await response(url, 308);
         assert.equal(new URL(result.headers.get('location'), origin).pathname, destination);
@@ -57,10 +62,13 @@ try {
         const result = await response(url, 404);
         assert.equal(result.headers.get('cache-control'), 'no-store');
         assert.match(result.headers.get('x-robots-tag'), /noindex/);
+        assertSecurityHeaders(result);
     }
     const manifest = await (await response('/publication.json', 200)).json();
     for (const url of manifest.urls) {
-        const html = await (await response(new URL(url).pathname, 200)).text();
+        const page = await response(new URL(url).pathname, 200);
+        assertSecurityHeaders(page);
+        const html = await page.text();
         assert.ok(html.includes(`rel="canonical" href="${url}"`));
         assert.ok(html.includes('content="host-a"'));
     }

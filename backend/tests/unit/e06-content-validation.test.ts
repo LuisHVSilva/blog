@@ -8,11 +8,13 @@ import {ContentValidationService} from '../../src/modules/publishing/domain/serv
 import {ContentHashService} from '../../src/modules/publishing/adapters/content-revision';
 import {argument, validateArguments} from '../../src/modules/publishing/adapters/cli/arguments';
 import {temporaryDirectory} from '../helpers/tooling';
+
 const contentRoot = existsSync('../content/catalog.yaml') ? '../content' : 'content';
 
-test('E06: the real catalogue has eight UTF-8 translations with meaningful AST text and references', async () => {
+test('E06: the real catalogue has twelve UTF-8 translations with meaningful AST text and references', async () => {
     const result = await parseContentRoot(contentRoot);
-    assert.equal(result.length, 8); assert.equal(new ContentValidationService().validate(result).valid, true);
+    assert.equal(result.length, 12);
+    assert.equal(new ContentValidationService().validate(result).valid, true);
     assert.equal(result.catalog.authors[0]?.displayName, 'Luis Henrique de Vasconcelos Silva');
     for (const item of result) { assert.doesNotMatch(item.body, /mistÃ|vocÃ|configuraÃ/u); assert.match(item.sourceRevision!, /^[a-f0-9]{64}$/u); }
 });

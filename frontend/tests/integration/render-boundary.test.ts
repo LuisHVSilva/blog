@@ -37,6 +37,6 @@ it('E04/E05: built HTML preserves public metadata, shell, outline and excludes b
             expect(styles).toContain('site-header__menu-button');
             expect(styles).toContain('article-code');
         }
-        expect(readFileSync(path.join(build.dist, 'redirects.conf'), 'utf8')).toContain('location = /en { return 308 /en/articles$is_args$args; }');
+        expect(readFileSync(path.join(build.dist, 'redirects.conf'), 'utf8')).toContain('location = / { return 308 /pt-BR$is_args$args; }');
     } finally { build.dispose(); }
 }, 120_000);

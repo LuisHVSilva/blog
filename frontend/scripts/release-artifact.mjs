@@ -31,7 +31,14 @@ function stableJson(value) {
     return value;
 }
 
-const snapshotDigest = (snapshot) => digest(JSON.stringify(stableJson(snapshot)));
+function snapshotForIntegrity(snapshot) {
+    // `publishedContent` parses this through snapshotSchema, which supplies an
+    // empty projects collection when an older snapshot omits it. Seal and
+    // verification must hash that same representation.
+    return {projects: [], ...snapshot};
+}
+
+const snapshotDigest = (snapshot) => digest(JSON.stringify(stableJson(snapshotForIntegrity(snapshot))));
 
 function artifactFiles(root, relative = '') {
     return readdirSync(path.join(root, relative), {withFileTypes: true}).flatMap((entry) => {

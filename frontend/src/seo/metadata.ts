@@ -36,7 +36,8 @@ function structuralAlternates(snapshot: PublishedSnapshot, page: ResolvedPublish
             : page.archivePage ? (page.archivePage === 1 ? `/${locale}/articles` : `/${locale}/articles/page/${page.archivePage}`)
             : page.sitePage ? `/${locale}/${page.sitePage}`
                 : page.pathname.endsWith('/tags') ? `/${locale}/tags`
-                    : page.pathname.endsWith('/series') ? `/${locale}/series` : undefined;
+                    : page.pathname.endsWith('/series') ? `/${locale}/series`
+                        : page.pathname.endsWith('/projects') ? `/${locale}/projects` : undefined;
         return path && staticPaths.has(path) ? [{locale, url: absolute(snapshot, path)}] : [];
     });
 }
@@ -85,6 +86,11 @@ function metadataText(page: ResolvedPublishedPage) {
         name: pt ? 'Series publicadas' : 'Published series',
         title: `${pt ? 'Series publicadas' : 'Published series'} | Stackcraft`,
         description: pt ? 'Sequencias de leitura definidas pela ordem editorial.' : 'Reading sequences defined by editorial order.'
+    };
+    if (page.pathname.endsWith('/projects')) return {
+        name: pt ? 'Projetos publicados' : 'Published projects',
+        title: `${pt ? 'Projetos publicados' : 'Published projects'} | Stackcraft`,
+        description: pt ? 'Projetos de software publicados e suas tecnologias.' : 'Published software projects and their technologies.'
     };
     return {name: '404', title: '404 | Stackcraft', description: pt ? 'Pagina nao encontrada.' : 'Page not found.'};
 }

@@ -99,13 +99,13 @@ The complete local stack is orchestrated by the root `compose.yaml`:
 
 ## Quick start: complete local stack
 
-From the repository root:
+From the repository root, run:
 
 ```bash
-docker compose up --build
+npm run dev:all
 ```
 
-The first run builds the backend and frontend images, creates the local PostgreSQL database, applies migrations, seeds the reviewed fixture from `content/`, exports the public snapshot, builds the static release, and starts Nginx.
+The command builds the backend and frontend images, creates or reuses the local PostgreSQL database, applies migrations, loads the reviewed source from `content/`, exports the public snapshot, builds the static release, and starts Nginx. It recreates the migration, content, and build services on each run, so changed articles, catalogue entries, tags, and series are included without deleting the database volume.
 
 Open the site at [`http://localhost:8080`](http://localhost:8080). Useful local endpoints include:
 

@@ -99,13 +99,13 @@ A stack local completa é orquestrada pelo `compose.yaml` da raiz:
 
 ## Início rápido: stack local completa
 
-Na raiz do repositório:
+Na raiz do repositório, execute:
 
 ```bash
-docker compose up --build
+npm run dev:all
 ```
 
-Na primeira execução, o comando gera as imagens do backend e frontend, cria o PostgreSQL local, aplica as migrations, carrega a fixture revisada de `content/`, exporta o snapshot público, gera o release estático e inicia o Nginx.
+O comando gera as imagens do backend e frontend, cria ou reutiliza o PostgreSQL local, aplica as migrations, carrega a fonte revisada em `content/`, exporta o snapshot público, gera o release estático e inicia o Nginx. Ele recria os serviços de migration, conteúdo e build a cada execução, portanto artigos, catálogo, tags e séries alterados são incluídos sem apagar o volume do banco.
 
 Acesse o site em [`http://localhost:8080`](http://localhost:8080). Alguns endpoints locais úteis:
 
